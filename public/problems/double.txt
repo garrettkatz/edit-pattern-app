@@ -1,0 +1,13 @@
+Double the Array
+~~~
+Given an array of integers, return a new array with each integer multiplied by two.
+~~~
+double(arr)
+~~~
+[3, 5, 7, 3, 2]
+[4, 18, 3, 2, 3]
+[6, 24, 1, 19, 2]
+~~~
+[6, 10, 14, 6, 4]
+[8, 36, 6, 4, 6]
+[12, 48, 2, 38, 4]

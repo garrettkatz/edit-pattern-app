@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+
+<!--
+06/22/22 update: The editor now logs keystrokes and stores them in a Firebase database.
+It also includes an input box (use input() in Python and readline() in JS to read each line of input) and allows for long, scrollable multi-line output.
+Every time you use the editor, it generates a random "session ID", a 9-digit key for which the database will store your keystrokes for this session under.
+If you would like to see your keystrokes played back, run visualizer.html and paste in your session ID.
+Several example codes to play back in the visualizer:
+A + B in Python: 721609702
+FizzBuzz in Python: 617732400
+Combinatorics (N choose K) and Binary Exponentiation in Python: 79520296
+Solution to Codeforces 1694A in Python: 58266358
+A + B in JavaScript: 251894852
+TODO:
+* Edge cases in print statements (I prioritized getting the database up and running before doing this)
+* Possibly switch from Firebase to InfluxDB?
+* Investigate potential security issues with either database platform
+* Include space for multiple test cases, and perhaps auto generate test cases based on which problem the user is solving?
+!-->
+
+    <head>
+        <meta charset="utf-8">
+        <title>Custom IDE</title>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython.min.js">
+        </script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython_stdlib.js">
+        </script>
+        <style>
+          .text-labels {
+            font-family: 'Monaco';
+          }
+          canvas {display: block; }
+          body {margin: 0; }
+          map {
+            position: absolute;
+          }
+          #editor {
+            position: absolute;
+
+            top: 240px;
+            bottom: 50px;
+            right: 50%;
+            left: 10%;
+          }
+          #input {
+            position: absolute;
+            top: 240px;
+            height: 100px;
+            right: 10%;
+            left: 55%;
+            padding: 20px;
+            border-style: solid;
+            border-color: 'rgb(0,0,0)';
+            border-width: 2px;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: left;
+            font-family: 'Monaco';
+            overflow: auto;
+          }
+          #output {
+            position: absolute;
+            top: 390px;
+            bottom: 50px;
+            right: 10%;
+            left: 55%;
+            padding: 20px;
+            border-style: solid;
+            border-color: 'rgb(0,0,0)';
+            border-width: 2px;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: left;
+            font-family: 'Monaco';
+            overflow: auto;
+          }
+          .button {
+            position: absolute;
+
+            border-style: none;
+            font-family: 'Avenir';
+            font-size: 23px;
+            border-radius: 12px;
+            cursor: pointer;
+          }
+          #selectjs {
+            color: rgba(0, 0, 0, 1);
+            top: 141px;
+            height: 40px;
+            background-color: rgba(200, 200, 200, 1);
+            left: 0%;
+            right: 50%;
+            border-radius: 0px;
+          }
+          #backgroundjs {
+            color: rgba(240, 120, 0, 1);
+            top: 141px;
+            height: 40px;
+            background-color: rgba(0, 0, 80, 1);
+            left: 0%;
+            right: 50%;
+            border-radius: 0px;
+          }
+          #selectpython {
+            color: rgba(0, 0, 0, 1);
+            top: 141px;
+            height: 40px;
+            background-color: rgba(200, 200, 200, 1);
+            left: 50%;
+            right: 0%;
+            border-radius: 0px;
+          }
+          #backgroundpython {
+            color: rgba(0, 0, 80, 1);
+            top: 141px;
+            height: 40px;
+            background-color: rgba(240, 120, 0, 1); /* go orange */
+            left: 50%;
+            right: 0%;
+            border-radius: 0px;
+          }
+          #runjs {
+            background-color: rgba(0, 150, 50, 0.8);
+            top: 195px;
+            left: 23%;
+            right: 67%;
+          }
+          #runpython {
+            top: 195px;
+            background-color: rgba(0, 150, 50, 0.8);
+            left: 23%;
+            right: 67%;
+          }
+          #title {
+            font-family: 'AvenirNext-Bold';
+            text-align: center;
+            font-size: 80px;
+            margin-top: 0px;
+          }
+          #subtitle {
+            font-family: 'Avenir';
+            text-align: center;
+            font-size: 23px;
+            margin-top: -14px;
+          }
+
+        </style>
+    </head>
+    <body onload="brython()">
+
+  <div id="title">Custom IDE</h1>
+  <div id="subtitle">Session ID: </div>
+
+  <button type="button" class="button" id="selectpython" onclick="python()"> Python  </button>
+  <button type="button" class="button" id="selectjs" onclick="js()"> JavaScript  </button>
+  <button type="button" class="button" id="backgroundpython" hidden=true>  Python </button>
+  <button type="button" class="button" id="backgroundjs">  JavaScript </button>
+  <button type="button" class="button" id="runpython"> Run  </button>
+  <button type="button" class="button" id="runjs" onclick="run()"> Run  </button>
+
+  <div id="editor"></div>
+  <div id="input">Input Goes Here</div>
+  <div id="output">Output Goes Here</div>
+
+  <!-- hidden text fields used to communicate data between this file and database.js !-->
+  <div hidden=true id="text"></div>
+  <div hidden=true id="inputtext"></div>
+  <div hidden=true id="edit"></div>
+  <div hidden=true id="editortype">javascript</div>
+
+  <script src="./ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="./database.js" type="module"></script>
+
+  <script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/textmate");
+    editor.session.setMode("ace/mode/javascript");
+    editor.setOptions({fontSize: '12pt', behavioursEnabled: false})
+
+    var inputBox = ace.edit("input");
+    inputBox.setTheme("ace/theme/textmate");
+    inputBox.session.setMode("ace/mode/text");
+    inputBox.setOptions({fontSize: '12pt'});
+
+    /* Sets the mode of the editor to Python */
+    function python() {
+      document.getElementById("runjs").hidden = true;
+      document.getElementById("runpython").hidden = false;
+      document.getElementById("backgroundjs").hidden = true;
+      document.getElementById("backgroundpython").hidden = false;
+      document.getElementById("editortype").innerHTML = "python";
+      editor.session.setMode("ace/mode/python");
+    }
+
+    /* Sets the mode of the editor to JS */
+    function js() {
+      document.getElementById("runjs").hidden = false;
+      document.getElementById("runpython").hidden = true;
+      document.getElementById("backgroundjs").hidden = false;
+      document.getElementById("backgroundpython").hidden = true;
+      document.getElementById("editortype").innerHTML = "javascript";
+      editor.session.setMode("ace/mode/javascript");
+    }
+
+    function run() {
+      var code = editor.getValue();
+      code = code.split("");
+
+      /* Sets the initial code to eventually be run, which includes a function to retrieve input step by step */
+      var newcode = `
+      var retStr = [];
+      var input = document.getElementById(\"inputtext\").innerHTML.split(\"\\n\")
+      var line = 0;
+      function nextInput() {
+        if (line >= input.length) {
+          return \"\";
+        }
+        else {
+          return input[line];
+          line++;
+        }
+      };
+      `;
+
+      /*Converts all console.log statements to adding to a variable, since console.log will do nothing when you run Function() on it */
+      /*Also converts all readline() statements to calling the customized nextInput() function above */
+      var finalPrint = "";
+      var i = 0;
+      while (i < code.length) {
+        var print = true;
+        for (var j = 0 ; j < 11 ; j++) {
+          if (code[i+j] != "console.log".split("")[j]) {
+            print = false;
+          }
+        }
+        var inp = true;
+        for (var j = 0 ; j < 10 ; j++) {
+          if (code[i+j] != "readline()".split("")[j]) {
+            inp = false;
+          }
+        }
+        if (!print && !inp) {
+          newcode += code[i];
+          i++;
+        }
+        else if (inp) {
+          newcode += "nextInput()";
+          i += 10;
+        }
+        else {
+          var j = 11;
+          var bal = 0;
+          var seen = false;
+          var toPrint = "";
+
+          /* Parses possible nested parentheses in console.log statement. This has a possible edge case if there is a parenthesis inside of quotations which I will fix */
+          while ((bal != 0 || !seen) && i+j < code.length) {
+            if (code[i+j] == '(') {
+              bal++;
+              seen = true;
+            }
+            else if (code[i+j] == ')') {
+              bal--;
+            }
+            if (bal > 0 || code[i+j] == '(' || code[i+j] == ')') {
+              toPrint += code[i+j];
+            }
+            j++;
+          }
+
+          newcode += "retStr.push(" + toPrint + ");\n";
+          i = i+j;
+        }
+      }
+
+      newcode += "return retStr.join(\"<br>\");";
+
+      /* Runs the JS code, and updates the editor output */
+      try {
+        document.getElementById("output").innerHTML = Function(newcode)();
+      }
+      catch (e) {
+        document.getElementById("output").innerHTML = "Syntax Error";
+      }
+    }
+
+    var oldValue = [];
+    var ost;
+    var orow;
+    var ocol;
+
+    function updateEditor() {
+      document.getElementById("inputtext").innerHTML = inputBox.getValue();
+      var nv = editor.getValue();
+      var pos = editor.getCursorPosition();
+      var row = pos.row;
+      var col = pos.column;
+
+      if (nv != oldValue) {
+        /* Figures out exactly which characters were edited from one keystroke */
+        /* This was a surprisingly difficult task, because in one keystroke the user could theoretically delete any number of characters and replace them with any number of characters (e.g. if they deleted a lot of code and pasted other code in simultaneously using Ctrl-V) */
+
+        nv = nv.split("");
+        oldValue = oldValue.split("");
+
+        var i = 0;
+        var j = 0;
+
+        while (i < nv.length) {
+          if (i >= oldValue.length || nv[i] != oldValue[i]) break;
+          i++;
+        }
+
+        while (j < nv.length && i+j < nv.length && i+j < oldValue.length) {
+          if (j >= oldValue.length || nv[nv.length - j - 1] != oldValue[oldValue.length -  j - 1]) break;
+          j++;
+        }
+
+        var newSlice = "";
+        var oldSlice = "";
+
+        for (var k = i ; nv.length - k - 1 >= j ; k++) {
+          newSlice += nv[k];
+        }
+        for (var k = i ; oldValue.length - k - 1 >= j ; k++) {
+          oldSlice += oldValue[k];
+        }
+
+        var line = 1;
+        var char = 1;
+
+        for (var k = 0 ; k < i ; k++) {
+          if (oldValue[k] == '\n') {
+            line++;
+            char = 1;
+          }
+          else {
+            char++;
+          }
+        }
+
+        var edit;
+
+        edit = [oldSlice, newSlice, line, char, i];
+
+        document.getElementById("edit").innerHTML = Date.now() + "~~~" + edit.join("~~~");
+
+      }
+
+      orow = row;
+      ocol = col;
+      oldValue = editor.getValue();
+      ost = editor.getSelectedText();
+
+      document.getElementById("text").innerHTML = editor.getValue();
+      window.requestAnimationFrame(updateEditor, 1);
+    }
+
+    updateEditor();
+
+    </script>
+
+    <script type="text/python">
+
+#//Uses Brython to run Python code in JS - exec() in Python will execute Python code, and this was easier than running Python code directly in JS (doing so would likely require a server.)
+from browser import document
+import random
+
+finalStr = ""
+
+inputIter = ""
+
+def run(ev):
+
+  global inputIter
+  global finalStr
+
+  inputStr = document.getElementById("inputtext").innerHTML.split("\n");
+
+  def inputGen():
+    for i in range(0, len(inputStr)):
+      yield inputStr[i]
+    while True:
+      yield ""
+
+  inputIter = inputGen()
+  allCode = document.getElementById("text").innerHTML
+  allCode = allCode.split("\n")
+
+
+
+  #//In a similar manner to the JS run() function above, this converts print statements to adding to a variable that will be stored in the code at the end of the exec() function
+  for i in range(0, len(allCode)):
+    #print(allCode[i])
+    for tabs in range(0, 100):
+      if "".join(list(allCode[i])[(tabs*4):(6 + tabs*4)]) == "print(":
+        allCode[i] = (" " * (tabs*4)) + "finalStr += str(" + "".join(list(allCode[i])[(6 + tabs*4):-1]) + ") + \"<br>\""
+    j = 0
+    while j < len(allCode[i]) - 7:
+      if "".join(list(allCode[i])[j:j+7]) == "input()":
+        allCode[i] = "".join(list(allCode[i])[:j]) + "next(inputIter)" + "".join(list(allCode[i])[(j+7):])
+      j += 1
+    j = 0
+
+    #//Fixes special characters (<, >, and &) since these get converted into garbage when being parsed JS
+    while j < len(allCode[i]) - 4:
+      if "".join(list(allCode[i])[j:j+4]) == "&lt;":
+        allCode[i] = "".join(list(allCode[i][:j])) + "<" + "".join(list(allCode[i][j+4:]))
+      if "".join(list(allCode[i])[j:j+4]) == "&gt;":
+        allCode[i] = "".join(list(allCode[i][:j])) + ">" + "".join(list(allCode[i][j+4:]))
+      j += 1
+    j = 0
+    while j < len(allCode[i]) - 5:
+      if "".join(list(allCode[i])[j:j+5]) == "&amp;":
+        allCode[i] = "".join(list(allCode[i][:j])) + "&" + "".join(list(allCode[i][j+5:]))
+      j += 1
+  allCode = "finalStr = \"\"\n" + "\n".join(allCode)
+  print(allCode)
+  #//This has several edge cases which I will fix: for example, using commas to separate arguments of a print() statement (which should print each argument separated by a space) does not work
+
+  #//Runs the Python code, storing all print() statements to the finalStr variable
+  try:
+    exec(allCode, globals());
+  except:
+    finalStr = "Syntax Error"
+
+  document.getElementById("output").innerHTML = finalStr;
+
+#//Runs the Python run() every time the Python "Run" button is clicked
+document['runpython'].bind('click', run);
+
+
+  </script>
+  </body>
+</html>

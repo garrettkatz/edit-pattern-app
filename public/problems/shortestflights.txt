@@ -1,0 +1,9 @@
+Shortest Flight Path
+~~~
+Write a function that, given a list of one-way flight paths between N cities (with each city having a unique integer ID), returns the shortest possible flight time between City 1 and City N.
+~~~
+shortest_path(N, flights)
+~~~
+5 [[1, 2, 5], [2, 5, 7], [2, 4, 2], [2, 3, 3], [3, 4, 5], [4, 5, 4]]
+~~~
+11

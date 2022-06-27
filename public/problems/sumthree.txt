@@ -1,0 +1,17 @@
+Sum of Three Integers
+~~~
+Write a function that calculates the sum of three integers x, y, and z.
+~~~
+sumthree(x, y, z)
+~~~
+3 4 7
+9 10 14
+65 42 31
+86 25 67
+91 55 42
+~~~
+14
+33
+138
+178
+188

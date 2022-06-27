@@ -1,0 +1,15 @@
+Multiplication
+~~~
+Write a function which calculates the product of two integers x and y.
+~~~
+product(x, y)
+~~~
+9 12
+2 3
+3 10
+4 18
+~~~
+108
+6
+30
+72

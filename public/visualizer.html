@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <!--
+  Visualizes the user's keystrokes from a previous typing session on the Custom IDE. See the note at the top of index.html for more details
+
+  Examples:
+    A + B in Python: 721609702
+    FizzBuzz in Python: 617732400
+    Combinatorics (N choose K) and Binary Exponentiation in Python: 79520296
+    Solution to Codeforces 1694A in Python: 58266358
+    A + B in JavaScript: 251894852
+  !-->
+
+    <head>
+        <meta charset="utf-8">
+        <title>IDE Playback Visualizer</title>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython.min.js">
+        </script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython_stdlib.js">
+        </script>
+        <style>
+          .text-labels {
+            font-family: 'Monaco';
+          }
+          canvas {display: block; }
+          body {margin: 0; }
+          map {
+            position: absolute;
+          }
+          #editor {
+            position: absolute;
+
+            top: 205px;
+            bottom: 30px;
+            right: 25%;
+            left: 25%;
+          }
+
+          #title {
+            font-family: 'AvenirNext-Bold';
+            text-align: center;
+            font-size: 63px;
+            margin-top: 0px;
+          }
+          #subtitle {
+            font-family: 'Avenir';
+            text-align: center;
+            font-size: 23px;
+            margin-top: 8px;
+          }
+          #subbox {
+            margin-left: 18px;
+            font-family: 'Avenir';
+            font-size: 18px;
+          }
+          #go {
+            background-color: rgba(0, 150, 50, 0.8);
+            margin-left: 20px;
+            width: 90px;
+          }
+          .button {
+            position: absolute;
+
+            border-style: none;
+            font-family: 'Avenir';
+            font-size: 23px;
+            border-radius: 12px;
+            cursor: pointer;
+          }
+
+
+          .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 50%;
+            height: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s
+            transition: opacity .2s;
+          }
+
+          #slider2 {
+            position: absolute;
+            margin-top: 180px;
+            margin-left: 25%;
+          }
+
+        </style>
+    </head>
+    <body>
+      <input type="range" min="0" max="1000" value="500" class = "slider" id="slider2">
+
+  <div id="title">IDE Playback Visualizer</h1>
+  <div id="subtitle">Enter Session ID: <input type="text" id="subbox"><button id="go" class="button">Go</button></div>
+  <div id="subtitle">Playback Speed: <span id="speed"></span>x</div>
+  <div id="editor"></div>
+
+  <input id="txt" hidden=true>
+  <div id="status" hidden=true></div>
+
+  <script src="./ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="./visualizer.js" type="module"></script>
+  <script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/textmate");
+    editor.session.setMode("ace/mode/python");
+    editor.setOptions({fontSize: '12pt', behavioursEnabled: false})
+
+    function update() {
+
+      var speed = parseInt(document.getElementById("slider2").value);
+      var p2 = parseInt(Math.pow(2, (speed - 500) / 100) * 100) / 100;
+
+      document.getElementById("speed").innerHTML = p2;
+
+      if (document.getElementById("status").innerHTML != "done") {
+        editor.setValue(document.getElementById("txt").value.split("~~~").join("\n"));
+        editor.clearSelection();
+      }
+
+      window.requestAnimationFrame(update, 1);
+    }
+
+    update();
+  </script>
+  </body>
+</html>

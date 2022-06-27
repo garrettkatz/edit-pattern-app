@@ -1,0 +1,19 @@
+Binomial Coefficients
+~~~
+Write a function that, given two integers N and K, returns N choose K, or the Binomial Coefficient of N and K.
+~~~
+n_choose_k(n, k)
+~~~
+5 3
+9 4
+10 3
+10 6
+12 9
+12 4
+~~~
+10
+126
+120
+210
+220
+495
