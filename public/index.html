@@ -840,7 +840,7 @@ TODO:
       /*Converts all console.log statements to adding to a variable, since console.log will do nothing when you run Function() on it */
       /*Also converts all readline() statements to calling the customized nextInput() function above */
       for (var i = 0 ; i < code.length ; i++) {
-        newcode += code[i];
+        newcode += code[i] + "\n";
         var contains = false;
         for (var j = 0 ; j < code[i].length ; j++) {
           contains |= (code[i][j] == '}');
@@ -912,6 +912,7 @@ TODO:
       //newcode += "\n  result = " + funcname + "(" + args.split("").slice(1, args.length-1).join("") + ");\n}\ncatch(e) {\nresult = \"Syntax Error\"}\nglobal_num++;\nwindow.setTimeout(runTest, 1);\nreturn result;";
       newcode += "\n  result = " + funcname + "(" + args.split("").slice(1, args.length-1).join("") + ");\n\n\nglobal_num++;\nwindow.setTimeout(runTest, 1);\nreturn result;";
 
+      console.log(newcode);
       //newcode += "return Date.now() - globalStartTime;";
 
       /* Runs the JS code, and updates the editor output */
