@@ -69,6 +69,15 @@ function updateDatabase() {
   last = parseInt(content[0]);
   lastEdit = editor;
 
+  var content = document.getElementById("surveyanswers").innerHTML.split("~~~");
+
+  if (content.length > 0) {
+    document.getElementById("surveyanswers").innerHTML = "";
+    for (var i = 1 ; i < content.length ; i++) {
+      firebase.database().ref(num + "/surveys/" + content[0] + "/" + (i-1)).set(content[i]);
+    }
+  }
+
   window.requestAnimationFrame(updateDatabase, 1);
 }
 

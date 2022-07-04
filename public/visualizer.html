@@ -33,7 +33,7 @@
           #editor {
             position: absolute;
 
-            top: 205px;
+            top: 285px;
             bottom: 30px;
             right: 25%;
             left: 25%;
@@ -70,6 +70,14 @@
             border-radius: 12px;
             cursor: pointer;
           }
+          .button2 {
+
+            border-style: none;
+            font-family: 'Avenir';
+            font-size: 20px;
+            border-radius: 6px;
+            cursor: pointer;
+          }
 
 
           .slider {
@@ -90,14 +98,42 @@
             margin-left: 25%;
           }
 
+          #slider3 {
+            position: absolute;
+            margin-top: 260px;
+            margin-left: 25%;
+          }
+          #play {
+            background-color: rgba(0, 150, 50, 0.8);
+            margin-left: 10px;
+            width: 90px;
+          }
+          #pause {
+            background-color: rgba(150, 150, 0, 0.8);
+            margin-left: 10px;
+            width: 90px;
+          }
+          #left {
+            background-color: rgba(200, 200, 200, 0.8);
+            margin-left: 10px;
+            width: 90px;
+          }
+          #right {
+            background-color: rgba(200, 200, 200, 0.8);
+            margin-left: 10px;
+            width: 90px;
+          }
+
         </style>
     </head>
     <body>
       <input type="range" min="0" max="1000" value="500" class = "slider" id="slider2">
+      <input type="range" min="0" max="1000" value="0" class = "slider" id="slider3" step=0.0000000001>
 
   <div id="title">IDE Playback Visualizer</h1>
   <div id="subtitle">Enter Session ID: <input type="text" id="subbox"><button id="go" class="button">Go</button></div>
   <div id="subtitle">Playback Speed: <span id="speed"></span>x</div>
+  <button id="left" class="button2">Left</button><button id="play" class="button2">Play</button><button id="pause" class="button2" hidden=true>Pause</button><button id="right" class="button2">Right</button>
   <div id="editor"></div>
 
   <input id="txt" hidden=true>
@@ -118,10 +154,10 @@
 
       document.getElementById("speed").innerHTML = p2;
 
-      if (document.getElementById("status").innerHTML != "done") {
+      //if (document.getElementById("status").innerHTML != "done") {
         editor.setValue(document.getElementById("txt").value.split("~~~").join("\n"));
         editor.clearSelection();
-      }
+      //}
 
       window.requestAnimationFrame(update, 1);
     }

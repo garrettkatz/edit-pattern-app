@@ -1,0 +1,12 @@
+product 300 simplesurvey
+sumthree 300 example
+fizzbuzz 300 example
+factorial 300 example
+arraysum 300 example
+double 300 example
+stringsort 300 example
+binomial 300 example
+minesweeper 600 example
+tictactoe 600 example
+binomial2 900 example
+shortestflights 2400 example

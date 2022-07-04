@@ -1,0 +1,4 @@
+SLIDER "How difficult was that problem, on a scale of 1 to 10?" 1 10
+MC "Did you copy and paste any code from the internet while solving the problem?" "No" "Yes"
+MC "Had you seen this problem before?" "No" "I had seen a similar problem before" "I had seen this exact problem before"
+TEXTBOX "Did you like this problem? Please explain."

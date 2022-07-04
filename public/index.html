@@ -155,11 +155,19 @@ TODO:
           }
           #select {
             font-family: 'Avenir';
-            font-size: 23px;
+            font-size: 22px;
             margin-left: 50%;
             margin-right: 0%;
             text-align: center;
-            margin-top: 70px;
+            margin-top: 63px;
+          }
+          #select2 {
+            font-family: 'Avenir';
+            font-size: 22px;
+            margin-left: 50%;
+            margin-right: 0%;
+            text-align: center;
+            margin-top: 8px;
           }
           #buttonplace {
             margin-top: 10px;
@@ -215,8 +223,8 @@ TODO:
           }
           #prob {
             position: absolute;
-            top: 290px;
-            height: 160px;
+            top: 320px;
+            height: 150px;
             right: 1%;
             left: 51%;
             padding: 20px;
@@ -231,7 +239,23 @@ TODO:
           }
           #testcases {
             position: absolute;
-            top: 510px;
+            top: 530px;
+            bottom: 40px;
+            right: 1%;
+            left: 51%;
+            padding: 20px;
+            border-style: solid;
+            border-color: 'rgb(0,0,0)';
+            border-width: 1px;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: left;
+            font-family: 'Monaco';
+            overflow: auto;
+          }
+          #survey {
+            position: absolute;
+            top: 210px;
             bottom: 40px;
             right: 1%;
             left: 51%;
@@ -265,16 +289,35 @@ TODO:
             text-align: left;
           }
 
+
           .green {
             background-color: rgba(0, 200, 0, 0.3);
+            text-align: center;
+            padding-left: 0px;
+            padding-right: 0px;
           }
 
           .red {
             background-color: rgba(200, 0, 0, 0.3);
+            text-align: center;
+            padding-left: 0px;
+            padding-right: 0px;
           }
 
           .gray {
             background-color: rgba(220, 220, 220);
+            text-align: center;
+            padding-left: 0px;
+            padding-right: 0px;
+          }
+
+          #testcase {
+            display: flex;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            color: rgb(255, 0, 0);
+            border-style: none;
+            width: 100%;
           }
 
           #number {
@@ -282,7 +325,6 @@ TODO:
             margin-left: 1%;
             width: 17%;
             padding-top: 7px;
-            height: 48px;
             text-align: center;
             font-family: 'AvenirNext-Bold';
             font-size: 17px;
@@ -294,9 +336,10 @@ TODO:
             width: calc(17% - 12px);
             padding-top: 6px;
             padding-left: 12px;
-            height: 48px;
+            padding-right: 0px;
             font-family: 'Monaco';
             font-size: 17px;
+            text-align: left;
 
             overflow: auto;
             whitespace: nowrap;
@@ -308,11 +351,13 @@ TODO:
             width: calc(17% - 5px);
             padding-top: 6px;
             padding-left: 12px;
-            height: 48px;
+            padding-right: 0px;
             font-family: 'Monaco';
             font-size: 17px;
             overflow: auto;
             whitespace: nowrap;
+            text-align: left;
+
           }
 
           #testoutput {
@@ -321,12 +366,14 @@ TODO:
             width: calc(17% - 12px);
             padding-top: 6px;
             padding-left: 12px;
-            height: 48px;
+            padding-right: 0px;
             font-family: 'Monaco';
             font-size: 17px;
 
             overflow: auto;
             whitespace: nowrap;
+            text-align: left;
+
           }
 
           #debug {
@@ -335,13 +382,16 @@ TODO:
             width: calc(17.5%);
             padding-top: 6px;
             padding-left: 12px;
-            height: 48px;
+            padding-right: 0px;
             font-family: 'Monaco';
             font-size: 17px;
 
             overflow: auto;
             whitespace: nowrap;
+            text-align: left;
+
           }
+
 
           #lnumber {
             position: absolute;
@@ -404,6 +454,105 @@ TODO:
             whitespace: nowrap;
           }
 
+          #surveytitle {
+            margin-top: 0px;
+            margin-left: 0%;
+            margin-right: 0%;
+            font-size: 28px;
+            font-family: 'AvenirNext-Bold';
+            text-align: center;
+          }
+
+          #surveysub {
+            margin-top: -15px;
+            margin-left: 0%;
+            margin-right: 0%;
+            font-size: 19px;
+            font-family: 'Avenir';
+            text-align: center;
+          }
+
+          #question {
+            margin-left: 0%;
+            margin-right: 0%;
+            padding-left: 15px;
+            padding-right: 15px;
+            font-size: 19px;
+            font-family: 'Avenir';
+            margin-top: 6px;
+            margin-bottom: 6px;
+            text-align: left;
+          }
+
+          #surveyinput {
+            margin-left:15px;
+            margin-right: 0%;
+            font-size: 19px;
+            font-family: 'Avenir';
+            text-align: left;
+            margin-bottom: 14px;
+            width: calc(100% - 40px);
+          }
+
+          #surveyslider {
+            margin-top: 5px;
+            margin-left: 15px;
+            width: calc(100% - 40px);
+          }
+
+          #surveynum {
+            margin-top: 10px;
+            margin-left: 15px;
+            font-family: 'Avenir';
+            font-size: 19px;
+            width: calc(100% - 40px);
+          }
+
+          .surveybutton {
+            margin-left: 15px;
+            border-style: none;
+            font-family: 'Avenir';
+            font-size: 17px;
+            background-color: rgba(200, 200, 200, 0.5);
+            border-radius: 3px;
+            margin-bottom: 15px;
+            cursor: pointer;
+          }
+
+          #nextbutton {
+            margin-left: calc(50% - 70px);
+            margin-right: calc(50% - 70px);
+            text-align: center;
+            border-style: none;
+            font-family: 'Avenir';
+            font-size: 17px;
+            background-color: rgba(0, 200, 0, 0.5);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            margin-top: 20px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+          }
+
+          #giveup {
+            margin-left: calc(75% - 32px);
+            text-align: center;
+            border-style: none;
+            font-family: 'Avenir';
+            font-size: 17px;
+            background-color: rgba(200, 0, 0, 0.5);
+            border-radius: 5px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            margin-top: 9px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+
+
         </style>
     </head>
     <body onload="brython()">
@@ -418,8 +567,12 @@ TODO:
   <!--<button type="button" class="button" id="runpython"> Run  </button>
   <button type="button" class="button" id="runjs" onclick="run()"> Run  </button>!-->
 
-  <div id="select">Select a Problem:</div>
-  <div id="buttonplace"></div>
+  <div id="select">Current Problem:</div>
+  <!--<div id="buttonplace"></div>!-->
+  <div id="select2">Time Remaining: <strong id="timeleft"></strong></div>
+  <button id="giveup" onclick=giveup()>Give Up</button>
+
+
   <div id="prob">
   <p id="probtitle"></p>
   <p id="statement"></p>
@@ -427,6 +580,9 @@ TODO:
   <div id="testcases">
 
   </div>
+  <div id="survey" hidden=true>
+  </div>
+
   <div id="editor"></div>
 
   <!-- hidden text fields used to communicate data between this file and database.js !-->
@@ -441,20 +597,62 @@ TODO:
   <div hidden=true id="pyresult"></div>
   <div hidden=true id="pydebug"></div>
   <div hidden=true id="index"></div>
-  <div hidden=true id="testcase"></div>
+  <div hidden=true id="curtestcase"></div>
   <div hidden=true id="starttime"></div>
   <div hidden=true id="lasttest"></div>
   <div hidden=true id="lastprob"></div>
   <div hidden=true id="laststart"></div>
 
+  <div hidden=true id="heighttest"></div>
+
   <div hidden=true id="jsdebug"></div>
+
+  <div hidden=true id="surveyanswers"></div>
 
   <script src="./ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
   <script src="./database.js" type="module"></script>
 
   <script>
-    /* Ordered list of problems given to the user */
-    var problemset = ["product", "sumthree", "fizzbuzz", "factorial", "arraysum", "double", "stringsort", "binomial", "minesweeper", "tictactoe", "binomial2", "shortestflights"];
+    // Ordered list of problems given to the user
+
+    var problemset = [];
+    var correct;
+    var times = [];
+    var surveys = [];
+    var surveydata = [];
+    var answers = [];
+    var survey = false;
+    var lastsurvey = false;
+    var problem = 0;
+    var totsolved = 0;
+    var problemStart = Date.now();
+
+    function readConfigFile(name, index) {
+      var file = "./" + name + ".txt";
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", file, false);
+      rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4) {
+          if (rawFile.status === 200 || rawFile.status == 0) {
+            var file = rawFile.responseText;
+
+            file = file.split("\n");
+            for (var i = 0 ; i < file.length ; i++) {
+              file[i] = file[i].split(" ");
+              if (file[i].length < 3) {
+                continue;
+              }
+              problemset.push(file[i][0]);
+              times.push(parseInt(file[i][1]));
+              surveys.push(file[i][2]);
+            }
+          }
+        }
+      }
+      rawFile.send(null);
+    }
+
+    readConfigFile("config");
 
     TIME_LIMIT_MS = 500; //Time limit for all problems in milliseconds
 
@@ -465,7 +663,7 @@ TODO:
 
     var lang = "js";
 
-    /* Sets the mode of the editor to Python */
+    // Sets the mode of the editor to Python
     function python() {
       //document.getElementById("runjs").hidden = true;
       //document.getElementById("runpython").hidden = false;
@@ -476,7 +674,7 @@ TODO:
       editor.session.setMode("ace/mode/python");
     }
 
-    /* Sets the mode of the editor to JS */
+    // Sets the mode of the editor to JS
     function js() {
       //document.getElementById("runjs").hidden = false;
       //document.getElementById("runpython").hidden = true;
@@ -521,6 +719,56 @@ TODO:
       rawFile.send(null);
     }
 
+    function readSurveyFile(name, index) {
+      var file = "./surveys/" + name + ".txt";
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", file, false);
+      rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4) {
+          if (rawFile.status === 200 || rawFile.status == 0) {
+            var file = rawFile.responseText;
+
+            var thissurvey = [];
+
+            file = file.split("\n");
+
+
+            for (var i = 0 ; i < file.length ; i++) {
+              file[i] = file[i].split(" ");
+              if (file[i].length<1) continue;
+              var type = file[i][0];
+              if (type == "TEXTBOX") {
+                var data = file[i].slice(1, file[i].length).join(" ");
+                data = data.split("").slice(1, data.length - 1).join("");
+                thissurvey.push([0, data]);
+              }
+              else if (type == "MC") {
+                var data = file[i].slice(1, file[i].length).join(" ");
+                data = data.split("\"");
+                question = data[1];
+                var mcanswers = [];
+                for (var j = 3 ; j < data.length ; j += 2) {
+                  mcanswers.push(data[j]);
+                }
+                thissurvey.push([1, question, mcanswers]);
+              }
+              else if (type == "SLIDER") {
+                var question = file[i].join(" ").split("\"")[1];
+                var low = parseInt(file[i][file[i].length - 2]);
+                var high = parseInt(file[i][file[i].length - 1]);
+                thissurvey.push([2, question, low, high]);
+              }
+            }
+
+
+            surveydata.push(thissurvey);
+
+          }
+        }
+      }
+      rawFile.send(null);
+    }
+
     for (var i = 0 ; i < problemset.length ; i++) {
       readTextFile(problemset[i], i);
 
@@ -528,8 +776,12 @@ TODO:
       var wp = 100 / problemset.length;
       var wid = "calc(" + wp + "% - 5.5px)";
 
-      document.getElementById("buttonplace").innerHTML += "<button class=\"buttons\" id=\"b" + (i+1) + "\" onclick=updateProblem(" + (i+1) + ") style=\"width:" + wid + "; margin-left:5px;\">" + (i+1) + "</button>";
+//      document.getElementById("buttonplace").innerHTML += "<button class=\"buttons\" id=\"b" + (i+1) + "\" onclick=updateProblem(" + (i+1) + ") style=\"width:" + wid + "; margin-left:5px;\">" + (i+1) + "</button>";
 
+    }
+
+    for (var i = 0 ; i < surveys.length ; i++) {
+      readSurveyFile(surveys[i], i);
     }
 
     var ind = 1;
@@ -615,10 +867,10 @@ TODO:
         changed = true;
       }
 
+
       if (!changed) {
         return;
       }
-
 
       var startTime = Date.now();
       globalStartTime = startTime;
@@ -645,7 +897,7 @@ TODO:
       }
       ind = index;
 
-      for (var i = 0 ; i < problemset.length ; i++) {
+      /*for (var i = 0 ; i < problemset.length ; i++) {
         if ((solvedpy[i] && lang == "python") || (solvedjs[i] && lang == "js")) {
           document.getElementById("b" + (i+1)).className = "solved";
         }
@@ -658,7 +910,7 @@ TODO:
       }
       else {
         document.getElementById("b" + index).className = "buttons2";
-      }
+      }*/
 
       var pd = data[index - 1];
 
@@ -713,34 +965,55 @@ TODO:
       document.getElementById("testcases").innerHTML += "<span id=\"ltestoutput\" style=\"margin-top: " + (0) + "px; margin-bottom: " + bot + "px;\">" + "Actual Output "  + "</span>";
       document.getElementById("testcases").innerHTML += "<span id=\"ldebug\" style=\"margin-top: " + (0) + "px; margin-bottom: " + bot + "px;\">" + "Debug Output"  + "</span>";
 
+      var ht = 25;
+
       for (var i = 0 ; i < global_testcases.length ; i++) {
         if (i < global_num) {
           cor += (global_results[i]);
         }
-        var ht = i*61 + 25;
+
+        var oldTestCases = document.getElementById("testcases").innerHTML;
+
+        document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
+        document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
+        document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
+        document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
+        document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
+
+        var maxHeight = 0;
+        var elList = document.getElementsByClassName("test" + i);
+        for (var j = 0 ; j < elList.length ; j++) {
+          maxHeight = Math.max(maxHeight, elList[j].offsetHeight);
+        }
+
+        document.getElementById("testcases").innerHTML = oldTestCases;
+
+        var iht = maxHeight;
+
         if (i < global_num && global_results[i]) {
-          document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"green\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"green\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"green\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"green\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"green\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
         }
         else if (i < global_num) {
-          document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
         }
         else {
-          document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"gray\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"gray\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"gray\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"gray\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
-          document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"gray\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
         }
-      }
 
+        ht += iht + 12;
+      }
 
       if (global_num < global_testcases.length) {
         var args = parse_testcase(global_testcases[global_num]);
@@ -767,7 +1040,7 @@ TODO:
           document.getElementById("args").innerHTML = global_testcases[global_num];
           document.getElementById("time").innerHTML = globalStartTime;
           document.getElementById("index").innerHTML = global_index;
-          document.getElementById("testcase").innerHTML = global_num;
+          document.getElementById("curtestcase").innerHTML = global_num;
           document.getElementById("starttime").innerHTML = globalStartTime;
         }
 
@@ -781,22 +1054,23 @@ TODO:
             else {
               solvedjs[global_index - 1] = true;
             }
-            document.getElementById("b" + (global_index)).className = "solved2";
+
+            //document.getElementById("b" + (global_index)).className = "solved2";
           }
           else {
             if (lang == "python") {
-              solvedpy[global_index - 1] = false;
+              //solvedpy[global_index - 1] = false;
             }
             else {
-              solvedjs[global_index - 1] = false;
+              //solvedjs[global_index - 1] = false;
             }
-            document.getElementById("b" + (global_index)).className = "buttons2";
+            //document.getElementById("b" + (global_index)).className = "buttons2";
           }
       }
     }
 
     function upd() {
-      updateProblem(ind);
+      updateProblem(problem+1);
       window.requestAnimationFrame(upd, 1000);
     }
 
@@ -833,12 +1107,12 @@ TODO:
       var code = editor.getValue();
       code = code.split("\n");
       var x = 2;
-      /* Sets the initial code to eventually be run, which includes a function to retrieve input step by step */
+      // Sets the initial code to eventually be run, which includes a function to retrieve input step by step
       //var newcode = "var retStr = \"\"\nvar result = \"\"\n\ntry { \nvar origStartTime = globalStartTime;\n";
       var newcode = "var retStr = \"\"\nvar result = \"\"\n\n\nvar origStartTime = globalStartTime;\n";
 
-      /*Converts all console.log statements to adding to a variable, since console.log will do nothing when you run Function() on it */
-      /*Also converts all readline() statements to calling the customized nextInput() function above */
+      //Converts all console.log statements to adding to a variable, since console.log will do nothing when you run Function() on it
+      //Also converts all readline() statements to calling the customized nextInput() function above
       for (var i = 0 ; i < code.length ; i++) {
         newcode += code[i] + "\n";
         var contains = false;
@@ -884,7 +1158,7 @@ TODO:
           var seen = false;
           var toPrint = "";
 
-          /* Parses possible nested parentheses in console.log statement. This has a possible edge case if there is a parenthesis inside of quotations which I will fix */
+          // Parses possible nested parentheses in console.log statement. This has a possible edge case if there is a parenthesis inside of quotations which I will fix
           while ((bal != 0 || !seen) && i+j < code.length) {
             if (code[i+j] == '(') {
               bal++;
@@ -912,10 +1186,10 @@ TODO:
       //newcode += "\n  result = " + funcname + "(" + args.split("").slice(1, args.length-1).join("") + ");\n}\ncatch(e) {\nresult = \"Syntax Error\"}\nglobal_num++;\nwindow.setTimeout(runTest, 1);\nreturn result;";
       newcode += "\n  result = " + funcname + "(" + args.split("").slice(1, args.length-1).join("") + ");\n\n\nglobal_num++;\nwindow.setTimeout(runTest, 1);\nreturn result;";
 
-      console.log(newcode);
+      //console.log(newcode);
       //newcode += "return Date.now() - globalStartTime;";
 
-      /* Runs the JS code, and updates the editor output */
+      // Runs the JS code, and updates the editor output
 
       try {
         var res = Function(newcode)();
@@ -936,14 +1210,131 @@ TODO:
     var orow;
     var ocol;
 
+    function giveup() {
+      survey = true;
+      correct = false;
+    }
+
+    function next() {
+      problem++;
+      if (correct) {
+        totsolved++;
+      }
+      document.getElementById("surveyanswers").innerHTML = problemset[problem-1] + "~~~" + answers.join("~~~");
+      if (problem >= problemset.length) {
+        survey = true;
+        document.getElementById("survey").innerHTML = "";
+        document.getElementById("survey").innerHTML += "<p id=\"surveytitle\">Experiment Complete!</p>";
+
+        document.getElementById("survey").innerHTML += "<p id=\"surveysub\">You got through all of the problems, solving " + totsolved + " out of " + problemset.length + " total.</p>";
+
+      }
+      else {
+        problemStart = Date.now();
+        updateProblem(problem+1);
+        survey = false;
+        document.getElementById("survey").innerHTML = "";
+        document.getElementById("survey").hidden = true;
+
+        document.getElementById("prob").hidden = false;
+        document.getElementById("testcases").hidden = false;
+        document.getElementById("select").hidden = false;
+        document.getElementById("select2").hidden = false;
+      }
+
+    }
+
+    function updateSurvey(i, j) {
+      answers[i] = surveydata[problem][i][2][j];
+      for (var k = 0 ; k < 1000 ; k++) {
+        var dc = document.getElementById(i + "-" + k);
+        if (!dc) break;
+        if (k == j) {
+          document.getElementById(i + "-" + k).style = "border-style: solid; border-color: rgb(0, 0, 255)";
+        }
+        else {
+          document.getElementById(i + "-" + k).style = "border-style: none;";
+        }
+      }
+    }
+
     function updateEditor() {
+
+      console.log(answers);
+      if (survey && !lastsurvey) {
+        answers = [];
+        for (var i = 0 ; i < surveydata[problem].length ; i++) {
+          if (surveydata[problem][i][0] == 0) {
+            answers.push("");
+          }
+          else if (surveydata[problem][i][0] == 1) {
+            answers.push(0);
+          }
+          else if (surveydata[problem][i][0] == 2) {
+            answers.push(surveydata[problem][i][2]);
+          }
+        }
+        document.getElementById("prob").hidden = true;
+        document.getElementById("testcases").hidden = true;
+        document.getElementById("select").hidden = true;
+        document.getElementById("select2").hidden = true;
+        document.getElementById("survey").hidden = false;
+        document.getElementById("survey").innerHTML = "";
+        //if (problem < problemset.length) {
+          if (correct) {
+            document.getElementById("survey").innerHTML += "<p id=\"surveytitle\">Problem Solved!</p>";
+          }
+          else {
+            document.getElementById("survey").innerHTML += "<p id=\"surveytitle\">Problem Failed</p>";
+          }
+          document.getElementById("survey").innerHTML += "<p id=\"surveysub\">Please complete this quick survey:</p>";
+          for (var i = 0 ; i < surveydata[problem].length ; i++) {
+            var question = surveydata[problem][i];
+            document.getElementById("survey").innerHTML += "<p id=\"question\">" + question[1] + "</p>";
+            if (question[0] == 0) {
+              document.getElementById("survey").innerHTML += "<input oninput=\"answers[" + i + "] = this.value;\" id=\"surveyinput\"></input>";
+            }
+            else if (question[0] == 1) {
+              for (var j = 0 ; j < question[2].length ; j++) {
+                document.getElementById("survey").innerHTML += "<button class=\"surveybutton\" onclick=updateSurvey(" + i + "," + j + ") id=\"" + i + "-" + j + "\">" + question[2][j] + "</button>";
+              }
+
+            }
+            else if (question[0] == 2) {
+              document.getElementById("survey").innerHTML += "<input type=\"range\" oninput=\"this.nextElementSibling.value = this.value; answers[" + i + "] = this.value;\" id=\"surveyslider\" min=" + question[2] + " max=" + question[3] + " value=" + question[2] + "></input>";
+              document.getElementById("survey").innerHTML += "<output id=\"surveynum\">" + question[2] + "</output>";
+            }
+          }
+          document.getElementById("survey").innerHTML += "<button id=\"nextbutton\" onclick=next()>Next Problem</button>";
+        //}
+      }
+
+      lastsurvey = survey;
+
+      document.getElementById("select").innerHTML = "Problem <strong>" + (problem+1) + "</strong> of <strong>" + problemset.length + "</strong>";
+      var time = parseInt(times[problem] - (Date.now() - problemStart) / 1000);
+      if (time < 0) {
+        giveup();
+      }
+      var tms = time%60;
+      if (tms<10) {
+        tms = "0" + tms;
+      }
+      document.getElementById("timeleft").innerHTML = parseInt(time/60) + ":" + tms;
+      var g = (time / times[problem]) * 255;
+      var r = 255 - g;
+      document.getElementById("timeleft").style = "color: rgb(" + r + "," + g + ",0)";
+
+      if (solvedpy[problem] || solvedjs[problem]) {
+        correct = true;
+        survey = true;
+      }
 
       if (document.getElementById("pyresult").innerHTML.length > 0) {
         jtest = document.getElementById("lasttest").innerHTML;
         jprob = document.getElementById("lastprob").innerHTML;
         jstart = document.getElementById("laststart").innerHTML;
 
-        //console.log(jtest + " " + jprob + " " + global_num + " " + global_index);
 
         if (!(jtest != global_num || jprob != global_index || jstart != globalStartTime)) {
 
@@ -980,8 +1371,8 @@ TODO:
 
       if (nv != oldValue) {
 
-        /* Figures out exactly which characters were edited from one keystroke */
-        /* This was a surprisingly difficult task, because in one keystroke the user could theoretically delete any number of characters and replace them with any number of characters (e.g. if they deleted a lot of code and pasted other code in simultaneously using Ctrl-V) */
+        // Figures out exactly which characters were edited from one keystroke
+        // This was a surprisingly difficult task, because in one keystroke the user could theoretically delete any number of characters and replace them with any number of characters (e.g. if they deleted a lot of code and pasted other code in simultaneously using Ctrl-V)
 
         nv = nv.split("");
         oldValue = oldValue.split("");
@@ -1040,6 +1431,7 @@ TODO:
 
       document.getElementById("index").innerHTML = global_index;
 
+
       window.requestAnimationFrame(updateEditor, 1);
     }
 
@@ -1091,13 +1483,12 @@ def run():
     tc = list(document.getElementById("args").innerHTML);
 
     prob = document.getElementById("index").innerHTML;
-    testcase = document.getElementById("testcase").innerHTML;
+    testcase = document.getElementById("curtestcase").innerHTML;
     startTime = document.getElementById("starttime").innerHTML;
 
     document.getElementById("sig").innerHTML = "";
 
     gstart = time.time();
-    print("starting to run")
 
     tcs = "";
     args = [];
@@ -1143,13 +1534,19 @@ def run():
         j += 1
       if spaceCount == 2:
         indent = 2
+
+      elcase = False
+      ls = list(allCode[i])
+      for j in range(0, len(ls) - 4):
+        if "".join(ls[j:j+5]) == "else:" or "".join(ls[j:j+4]) == "elif":
+          elcase = True
+      if len(allCode[i]) and list(allCode[i])[-1] != " " and (not elcase):
+        newCode += (" " * (spaceCount + indent)) + "if random.randint(1, 30) == 27 and time.time() - start >= 1.0:\n"
+        newCode += (" " * (spaceCount + indent * 2)) + "return \"Time Limit Exceeded\"\n"
       newCode += (" " * indent) + allCode[i]
       newCode += "\n";
       if len(allCode[i]) >= spaceCount + 3 and "".join(list(allCode[i])[spaceCount:spaceCount+3]) == "def":
         newCode += (" " * indent * 2) + "global debugStr\n"
-      if len(allCode[i]) and list(allCode[i])[-1] != ":" and list(allCode[i])[-1] != " ":
-        newCode += (" " * (spaceCount + indent)) + "if random.randint(1, 30) == 27 and time.time() - start >= 0.5:\n"
-        newCode += (" " * (spaceCount + indent * 2)) + "return \"Time Limit Exceeded\"\n"
     newCode += "    return " + sig + "(" + ",".join([str(i) for i in args]) + ")\n"
     newCode += "finalStr = allcode()"
     newCode = list(newCode)
@@ -1188,7 +1585,6 @@ def run():
 
     newCode = "\n".join(newCode)
 
-    print(time.time() - gstart)
     #//Runs the Python code, storing all print() statements to the finalStr variable
 
     document.getElementById("lastprob").innerHTML = prob;
@@ -1196,10 +1592,11 @@ def run():
     document.getElementById("laststart").innerHTML = startTime;
 
 
+    print("executing: ")
+
     try:
       exec(newCode, globals());
     except:
-      print(debugStr)
       document.getElementById("pyresult").innerHTML = "Syntax Error";
       document.getElementById("pydebug").innerHTML = debugStr;
       return;
@@ -1207,7 +1604,11 @@ def run():
     finalStr = deep_convert(finalStr)
 
     document.getElementById("pyresult").innerHTML = finalStr;
+
     document.getElementById("pydebug").innerHTML = debugStr;
+
+    print(document.getElementById("pyresult"))
+
 
 run();
 

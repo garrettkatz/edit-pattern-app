@@ -1,0 +1,4 @@
+TEXTBOX "What is your name?"
+TEXTBOX "What is your quest?"
+MC "What is your favorite color?" "Red" "Blue" "Green" "Yellow"
+SLIDER "What is the airspeed velocity of an unladen swallow?" 0 100
