@@ -21,6 +21,7 @@ document.getElementById("subtitle").innerHTML = "Session ID: " + num;
 firebase.database().ref(num).set({});
 
 var last = -1;
+var last2 = -1;
 var lastEdit = "";
 
 function updateDatabase() {
@@ -49,24 +50,39 @@ function updateDatabase() {
 
   content = nc.split("~~~");
 
+  //624255731
   var editor = document.getElementById("editortype").innerHTML;
 
+  var prob = document.getElementById("probid").innerHTML;
 
-  if (content.length == 6 && parseInt(content[0]) != last) {
-    firebase.database().ref(num + "/" + content[0]).set({});
-    firebase.database().ref(num + "/" + content[0] + "/oldcode").set(content[1]);
-    firebase.database().ref(num + "/" + content[0] + "/newcode").set(content[2]);
-    firebase.database().ref(num + "/" + content[0] + "/row").set(parseInt(content[3]));
-    firebase.database().ref(num + "/" + content[0] + "/col").set(parseInt(content[4]));
-    firebase.database().ref(num + "/" + content[0] + "/index").set(parseInt(content[5]));
+  if ((content.length >= 6 && parseInt(content[0]) != last) || (content.length > 6 && parseInt(content[0]) != last2)) {
+    console.log(content);
+    firebase.database().ref(num + "/" + prob + "/" + content[0]).set({});
+    firebase.database().ref(num + "/" + prob + "/" + content[0] + "/oldcode").set(content[1]);
+    firebase.database().ref(num + "/" + prob + "/" + content[0] + "/newcode").set(content[2]);
+    firebase.database().ref(num + "/" + prob + "/" + content[0] + "/row").set(parseInt(content[3]));
+    firebase.database().ref(num + "/" + prob + "/" + content[0] + "/col").set(parseInt(content[4]));
+    firebase.database().ref(num + "/" + prob + "/" + content[0] + "/index").set(parseInt(content[5]));
+    if (content.length >= 7) {
+      firebase.database().ref(num + "/" + prob + "/" + content[0] + "/correct_testcases").set(parseInt(content[6]));
+    }
+    if (content.length >= 8) {
+      firebase.database().ref(num + "/" + prob + "/" + content[0] + "/total_testcases").set(parseInt(content[7]));
+    }
   }
 
   if (editor != lastEdit) {
     console.log("setting");
-    firebase.database().ref(num + "/language").set(editor);
+    firebase.database().ref(num + "/" + prob + "/language").set(editor);
   }
 
-  last = parseInt(content[0]);
+  if (content.length <= 6) {
+    last = parseInt(content[0]);
+  }
+  else {
+    last2 = parseInt(content[0]);
+  }
+
   lastEdit = editor;
 
   var content = document.getElementById("surveyanswers").innerHTML.split("~~~");

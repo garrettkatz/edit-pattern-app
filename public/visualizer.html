@@ -33,7 +33,7 @@
           #editor {
             position: absolute;
 
-            top: 285px;
+            top: 328px;
             bottom: 30px;
             right: 25%;
             left: 25%;
@@ -52,6 +52,11 @@
             margin-top: 8px;
           }
           #subbox {
+            margin-left: 18px;
+            font-family: 'Avenir';
+            font-size: 18px;
+          }
+          #subbox2 {
             margin-left: 18px;
             font-family: 'Avenir';
             font-size: 18px;
@@ -94,13 +99,13 @@
 
           #slider2 {
             position: absolute;
-            margin-top: 180px;
+            margin-top: 220px;
             margin-left: 25%;
           }
 
           #slider3 {
             position: absolute;
-            margin-top: 260px;
+            margin-top: 300px;
             margin-left: 25%;
           }
           #play {
@@ -131,7 +136,7 @@
       <input type="range" min="0" max="1000" value="0" class = "slider" id="slider3" step=0.0000000001>
 
   <div id="title">IDE Playback Visualizer</h1>
-  <div id="subtitle">Enter Session ID: <input type="text" id="subbox"><button id="go" class="button">Go</button></div>
+  <div id="subtitle">Enter Session ID: <input type="text" id="subbox"></div><div id="subtitle">Enter Problem Number: <input type="text" id="subbox2"><button id="go" class="button">Go</button></div>
   <div id="subtitle">Playback Speed: <span id="speed"></span>x</div>
   <button id="left" class="button2">Left</button><button id="play" class="button2">Play</button><button id="pause" class="button2" hidden=true>Pause</button><button id="right" class="button2">Right</button>
   <div id="editor"></div>
@@ -146,7 +151,7 @@
     editor.setTheme("ace/theme/textmate");
     editor.session.setMode("ace/mode/python");
     editor.setOptions({fontSize: '12pt', behavioursEnabled: false})
-
+//911382329
     function update() {
 
       var speed = parseInt(document.getElementById("slider2").value);

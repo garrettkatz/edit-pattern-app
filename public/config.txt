@@ -1,12 +1,14 @@
-product 300 simplesurvey
-sumthree 300 example
-fizzbuzz 300 example
-factorial 300 example
-arraysum 300 example
-double 300 example
-stringsort 300 example
-binomial 300 example
-minesweeper 600 example
-tictactoe 600 example
-binomial2 900 example
-shortestflights 2400 example
+presurvey
+product 300 simplesurvey PYTHON
+sumthree 300 simplesurvey JS
+fizzbuzz 300 simplesurvey
+factorial 300 simplesurvey
+arraysum 300 simplesurvey
+double 300 simplesurvey
+stringsort 300 simplesurvey
+binomial 300 simplesurvey
+minesweeper 600 simplesurvey
+tictactoe 600 simplesurvey
+binomial2 900 simplesurvey
+shortestflights 2400 simplesurvey
+postsurvey

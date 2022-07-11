@@ -36,6 +36,8 @@ function start() {
 
 
   var id = parseInt(document.getElementById("subbox").value);
+  var prob = parseInt(document.getElementById("subbox2").value)-1;
+
   var dbRef = firebase.database().ref(id);
   var edits = [];
   var lang = "python";
@@ -45,17 +47,21 @@ function start() {
       var ks = Object.getOwnPropertyNames(vl);
       console.log(ks.length);
       for (var i = 0 ; i < ks.length ; i++) {
+
+      }
+      ks = Object.getOwnPropertyNames(vl[prob]);
+      for (var i = 0 ; i < ks.length ; i++) {
+        var val = vl[prob][ks[i]];
         if (ks[i] == "language") {
           lang = snapshot.val()[ks[i]];
         }
-        else if (ks[i] == "surveys") {
-
-        }
         else {
-          var val = snapshot.val()[ks[i]];
+
           edits.push([parseInt(ks[i]), val["row"], val["col"], val["oldcode"], val["newcode"], val["index"]]);
         }
       }
+      edits[0][3] = "";
+      console.log(edits);
     }
   });
 
