@@ -1,4 +1,4 @@
-Sum of Three Integers
+Sum of Three Integers STRICT
 ~~~
 Write a function that calculates the sum of three integers x, y, and z.
 ~~~
@@ -9,9 +9,11 @@ sumthree(x, y, z)
 65 42 31
 86 25 67
 91 55 42
+(5 8 12)
 ~~~
 14
 33
 138
 178
 188
+25

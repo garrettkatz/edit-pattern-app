@@ -18,6 +18,8 @@ fizzbuzz(n)
 95
 97
 120
+(125)
+(126)
 ~~~
 ""
 "Fizz"
@@ -28,3 +30,5 @@ fizzbuzz(n)
 "Fizz"
 ""
 "FizzBuzz"
+"Fizz"
+"Buzz"

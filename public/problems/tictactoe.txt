@@ -1,4 +1,4 @@
-Tic-Tac-Toe
+Tic-Tac-Toe STRICT
 ~~~
 Write a function that, given a 3x3 tic-tac-toe grid of X"s, O"s, and empty spaces, returns whether either player X or O has already won the game, or if the game is still ongoing.
 ~~~
@@ -7,7 +7,9 @@ tictactoe(grid)
 [["X", "X", "X"], ["O", " ", " "], [" ", "O", " "]]
 [["X", " ", "X"], ["O", "X", " "], [" ", "X", " "]]
 [[" ", " ", "O"], ["X", "O", "O"], ["O", "X", "X"]]
+([[" ", "X", " "], ["O", "X", "O"], ["O", "X", " "]])
 ~~~
 "X"
 "Ongoing"
 "O"
+"X"

@@ -5,5 +5,7 @@ Write a function that, given a list of one-way flight paths between N cities (wi
 shortest_path(N, flights)
 ~~~
 5 [[1, 2, 5], [2, 5, 7], [2, 4, 2], [2, 3, 3], [3, 4, 5], [4, 5, 4]]
+(6 [[1, 2, 6], [2, 3, 5], [2, 4, 3], [3, 6, 11], [3, 5, 1], [4, 5, 2], [5, 6, 3]])
 ~~~
 11
+15

@@ -1,4 +1,4 @@
-Binomial Coefficients
+Binomial Coefficients STRICT
 ~~~
 Write a function that, given two integers N and K, returns N choose K, or the Binomial Coefficient of N and K.
 ~~~
@@ -10,6 +10,7 @@ n_choose_k(n, k)
 10 6
 12 9
 12 4
+(6 4)
 ~~~
 10
 126
@@ -17,3 +18,4 @@ n_choose_k(n, k)
 210
 220
 495
+15
