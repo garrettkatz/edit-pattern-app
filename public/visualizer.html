@@ -129,13 +129,35 @@
             width: 90px;
           }
 
+          #signin {
+            margin-top: 20px;
+            margin-left: 20%;
+            background-color: rgb(0, 0, 80);
+            color: rgb(200, 150, 0);
+            font-family: 'Avenir';
+            font-size: 22px;
+            border-style: none;
+            border-radius: 4px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            cursor: pointer;
+            width: 60%;
+          }
+
         </style>
     </head>
     <body>
-      <input type="range" min="0" max="1000" value="500" class = "slider" id="slider2">
-      <input type="range" min="0" max="1000" value="0" class = "slider" id="slider3" step=0.0000000001>
 
-  <div id="title">IDE Playback Visualizer</h1>
+  <div id="prelogin">
+    <h1 id="title">IDE Playback Visualizer</h1>
+    <button id="signin">Sign In (use your SU email)</button>
+  </div>
+<div id="loggedin" hidden=true>
+  <div id="uid" hidden=true></div>
+    <input type="range" min="0" max="1000" value="500" class = "slider" id="slider2">
+    <input type="range" min="0" max="1000" value="0" class = "slider" id="slider3" step=0.0000000001>
+    <div id="title">IDE Playback Visualizer</h1>
+
   <div id="subtitle">Enter Session ID: <input type="text" id="subbox"></div><div id="subtitle">Enter Problem Number: <input type="text" id="subbox2"><button id="go" class="button">Go</button></div>
   <div id="subtitle">Playback Speed: <span id="speed"></span>x</div>
   <button id="left" class="button2">Left</button><button id="play" class="button2">Play</button><button id="pause" class="button2" hidden=true>Pause</button><button id="right" class="button2">Right</button>
@@ -143,10 +165,23 @@
 
   <input id="txt" hidden=true>
   <div id="status" hidden=true></div>
+</div>
 
   <script src="./ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
   <script src="./visualizer.js" type="module"></script>
   <script>
+    function checkLogin() {
+      if (document.getElementById("uid").innerHTML.length > 0) {
+        document.getElementById("uid").innerHTML = "";
+        document.getElementById("prelogin").hidden = true;
+        document.getElementById("loggedin").hidden = false;
+      }
+
+      window.requestAnimationFrame(checkLogin, 1);
+    }
+
+    checkLogin();
+
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/textmate");
     editor.session.setMode("ace/mode/python");

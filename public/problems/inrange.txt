@@ -1,0 +1,21 @@
+In Range STRICT
+~~~
+Given three integers l, r, and x, return whether or not x is "in range" of l and r: that is, if l <= x <= r.
+~~~
+inrange(l, r, x)
+~~~
+3 9 5
+3 10 10
+3 10 2
+4 6 5
+1 5 9
+(3 5 8)
+(3 5 3)
+~~~
+"INRANGE"
+"INRANGE"
+"OUTOFRANGE"
+"INRANGE"
+"OUTOFRANGE"
+"OUTOFRANGE"
+"INRANGE"

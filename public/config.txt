@@ -1,12 +1,16 @@
 presurvey
 product 300 simplesurvey PYTHON
 sumthree 300 simplesurvey JS
+inrange 300 simplesurvey
 fizzbuzz 300 simplesurvey
 factorial 300 simplesurvey
 arraysum 300 simplesurvey
 double 300 simplesurvey
+collatz 300 simplesurvey
 stringsort 300 simplesurvey
+validbracket 450 simplesurvey
 binomial 300 simplesurvey
+positionsort 450 simplesurvey
 minesweeper 600 simplesurvey
 tictactoe 600 simplesurvey
 binomial2 900 simplesurvey

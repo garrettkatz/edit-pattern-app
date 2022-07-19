@@ -1,0 +1,18 @@
+Valid Bracket Sequence STRICT
+~~~
+Given a string representing a bracket sequence with open and closed parentheses, return whether or not the bracket sequence is valid.
+A bracket sequence is valid if it is balanced (i.e. the number of closed parentheses and open parentheses is equal), and there is never a point in the sequence where there are more closed parentheses before it than open parentheses.
+~~~
+validbracket(seq)
+~~~
+"(()())"
+"((())"
+"()((()())())"
+"))(())(("
+("(()()))((()())")
+~~~
+"VALID"
+"INVALID"
+"VALID"
+"INVALID"
+"INVALID"

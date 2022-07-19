@@ -14,6 +14,43 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+var uid = "";
+
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/firebase.User
+    uid = user.uid;
+
+    document.getElementById("uid").innerHTML = uid;
+  }
+});
+
+function googleSignin() {
+   firebase.auth()
+
+   .signInWithPopup(provider).then(function(result) {
+      var token = result.credential.accessToken;
+      var user = result.user;
+
+      uid = user.uid;
+
+      document.getElementById("uid").innerHTML = uid;
+
+   }).catch(function(error) {
+      var errorCode = error.code;
+      var errorMessage = error.message;
+
+      console.log(error.code)
+      console.log(error.message)
+   });
+}
+
+document.getElementById("signin").onclick = function() {
+  googleSignin();
+}
+
+
 var realStartTime;
 var paused = true;
 
@@ -35,15 +72,17 @@ function start() {
   speed = p2;
 
 
-  var id = parseInt(document.getElementById("subbox").value);
+  var id = document.getElementById("subbox").value;
   var prob = parseInt(document.getElementById("subbox2").value)-1;
 
-  var dbRef = firebase.database().ref(id);
+  var dbRef = firebase.database().ref(id + "/keystrokes");
+
   var edits = [];
   var lang = "python";
   dbRef.on("value", function(snapshot) {
     if (snapshot != null && snapshot.val() != null) {
       var vl = snapshot.val();
+      console.log(vl);
       var ks = Object.getOwnPropertyNames(vl);
       console.log(ks.length);
       for (var i = 0 ; i < ks.length ; i++) {
@@ -257,22 +296,24 @@ function right() {
   goright = true;
 }
 
-document.getElementById("go").addEventListener('click', event =>  {
-  start();
-});
+//if (uid.length > 0) {
+  document.getElementById("go").addEventListener('click', event =>  {
+    start();
+  });
 
-document.getElementById("play").addEventListener('click', event =>  {
-  play();
-});
+  document.getElementById("play").addEventListener('click', event =>  {
+    play();
+  });
 
-document.getElementById("pause").addEventListener('click', event =>  {
-  pause();
-});
+  document.getElementById("pause").addEventListener('click', event =>  {
+    pause();
+  });
 
-document.getElementById("right").addEventListener('click', event =>  {
-  right();
-});
+  document.getElementById("right").addEventListener('click', event =>  {
+    right();
+  });
 
-document.getElementById("left").addEventListener('click', event =>  {
-  left();
-});
+  document.getElementById("left").addEventListener('click', event =>  {
+    left();
+  });
+//}

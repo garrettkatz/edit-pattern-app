@@ -1,0 +1,17 @@
+Sort by Position
+~~~
+Given an array of distinct positive integers, return a new array with each element being the index of the original array element if you sorted the array.
+~~~
+positionsort(arr)
+~~~
+[3, 9, 5, 2, 1]
+[7, 8, 9, 10, 11]
+[6, 5, 4, 2, 1]
+[8, 10, 7, 9, 5]
+([1, 3, 9, 5, 2])
+~~~
+[2, 4, 3, 1, 0]
+[0, 1, 2, 3, 4]
+[4, 3, 2, 1, 0]
+[2, 4, 1, 3, 0]
+[0, 2, 4, 3, 1]
