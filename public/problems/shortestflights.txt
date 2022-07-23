@@ -1,6 +1,7 @@
 Shortest Flight Path
 ~~~
 Write a function that, given a list of one-way flight paths between N cities (with each city having a unique integer ID), returns the shortest possible flight time between City 1 and City N.
+The input will be given as a list of flights, with each flight being represented as a three-element list consisting of the numbers of the two cities the flight connects (from the first city to the second city only), and the time that the flight takes, in that order.
 ~~~
 shortest_path(N, flights)
 ~~~
@@ -8,4 +9,4 @@ shortest_path(N, flights)
 (6 [[1, 2, 6], [2, 3, 5], [2, 4, 3], [3, 6, 11], [3, 5, 1], [4, 5, 2], [5, 6, 3]])
 ~~~
 11
-15
+14
