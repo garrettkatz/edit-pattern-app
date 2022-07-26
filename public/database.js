@@ -54,9 +54,7 @@ firebase.auth().onAuthStateChanged((user) => {
         var info = vl["info"];
         if (!done && info != undefined) {
 
-          console.log("UPDATING");
           var problem = info["problem"];
-          console.log(problem);
           var jscode;
           if (info["jscode"] == undefined) {
             jscode = "";
@@ -113,8 +111,6 @@ function googleSignin() {
       var errorCode = error.code;
       var errorMessage = error.message;
 
-      console.log(error.code)
-      console.log(error.message)
    });
 }
 
@@ -142,6 +138,12 @@ document.getElementById("signout").onclick = function() {
   googleSignout();
 }
 
+document.getElementById("restartbutton").onclick = function() {
+  firebase.database().ref(uid).set({});
+  document.getElementById("restart").innerHTML = "yes";
+
+}
+
 
 
 
@@ -156,6 +158,7 @@ var lpycode;
 var ljscode;
 var lcount;
 var ldone;
+var lstatus;
 
 function updateDatabase() {
   var prob = document.getElementById("send_problem").innerHTML;
@@ -165,7 +168,8 @@ function updateDatabase() {
   var time = document.getElementById("send_timeleft").innerHTML;
   var status = document.getElementById("send_status").innerHTML;
 
-  if (done && prob.length > 0 && pycode.length && jscode.length && ljscode.length && lpycode.length && uid != undefined && (!ldone || prob != lprob || pycode.join("~~~") != lpycode.join("~~~") || jscode.join("~~~") != ljscode.join("~~~") || count != lcount)) {
+
+  if (done && prob.length > 0 && pycode.length && jscode.length && ljscode.length && lpycode.length && uid != undefined && (status != lstatus ||  !ldone || prob != lprob || pycode.join("~~~") != lpycode.join("~~~") || jscode.join("~~~") != ljscode.join("~~~") || count != lcount)) {
     firebase.database().ref(uid + "/info/problem").set(prob);
     for (var i = 0 ; i < 1000 ; i++) {
       if (i < pycode.length) {
@@ -196,6 +200,7 @@ function updateDatabase() {
   ljscode = jscode;
   lcount = count;
   ldone = done;
+  lstatus = status;
 
   var content = document.getElementById("edit").innerHTML.split("");
 
@@ -243,7 +248,6 @@ function updateDatabase() {
   }
 
   if (editor != lastEdit) {
-    console.log("setting");
     firebase.database().ref(uid + "/language").set(editor);
   }
 

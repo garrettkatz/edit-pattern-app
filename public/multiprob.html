@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html>
+
+<!--
+
+06/22/22 update: The editor now logs keystrokes and stores them in a Firebase database.
+It also includes an input box (use input() in Python and readline() in JS to read each line of input) and allows for long, scrollable multi-line output.
+Every time you use the editor, it generates a random "session ID", a 9-digit key for which the database will store your keystrokes for this session under.
+If you would like to see your keystrokes played back, run visualizer.html and paste in your session ID.
+Several example codes to play back in the visualizer:
+A + B in Python: 721609702
+FizzBuzz in Python: 617732400
+Combinatorics (N choose K) and Binary Exponentiation in Python: 79520296
+Solution to Codeforces 1694A in Python: 58266358
+A + B in JavaScript: 251894852
+All problems solved: 240002487
+
+06/27/22 update: The editor includes automated testing! Problems are located in the "problems" folder -
+The editor currently includes 12 example problems I made (sorted from easiest to hardest)
+To create and add a problem, create a text file in the "problems" folder, and follow the format of the template.txt problem example. Add the name of the text file (excluding the .txt) to the "problemset" list on line 457, in its appropriate position in the list.
+
+TODO:
+* More detailed error messages
+* Support for floating point numbers as input/output
+
+!-->
+
+    <head>
+        <meta charset="utf-8">
+        <title>Keylogging IDE</title>
+        <script src="https://www.gstatic.com/firebasejs/5.5.1/firebase.js"></script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython.min.js">
+        </script>
+        <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/brython@3.10.5/brython_stdlib.js">
+        </script>
+        <style>
+          .text-labels {
+            font-family: 'Monaco';
+          }
+          canvas {display: block; }
+          body {margin: 0; }
+          map {
+            position: absolute;
+          }
+          #editor {
+            position: absolute;
+
+            top: 210px;
+            bottom: 50px;
+            right: 50%;
+            left: 10%;
+          }
+          #input {
+            position: absolute;
+            top: 240px;
+            height: 100px;
+            right: 10%;
+            left: 55%;
+            padding: 20px;
+            border-style: solid;
+            border-color: 'rgb(0,0,0)';
+            border-width: 2px;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: left;
+            font-family: 'Monaco';
+            overflow: auto;
+          }
+          #output {
+            position: absolute;
+            top: 390px;
+            bottom: 50px;
+            right: 10%;
+            left: 55%;
+            padding: 20px;
+            border-style: solid;
+            border-color: 'rgb(0,0,0)';
+            border-width: 2px;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: left;
+            font-family: 'Monaco';
+            overflow: auto;
+          }
+          .button {
+            position: absolute;
+
+            border-style: none;
+            font-family: 'Avenir';
+            font-size: 23px;
+            border-radius: 12px;
+            cursor: pointer;
+          }
+          #selectjs {
+            color: rgba(0, 0, 0, 1);
+            top: 141px;
+            height: 40px;
+            background-color: rgba(200, 200, 200, 1);
+            left: 0%;
+            right: 50%;
+            border-radius: 0px;
+          }
+          #backgroundjs {
+            color: rgba(240, 120, 0, 1);
+            top: 141px;
+            height: 40px;
+            background-color: rgba(0, 0, 80, 1);
+            left: 0%;
+            right: 50%;
+            border-radius: 0px;
+          }
+          #selectpython {
+            color: rgba(0, 0, 0, 1);
+            top: 141px;
+            height: 40px;
+            background-color: rgba(200, 200, 200, 1);
+            left: 50%;
+            right: 0%;
+            border-radius: 0px;
+          }
+          #backgroundpython {
+            color: rgba(0, 0, 80, 1);
+            top: 141px;
+            height: 40px;
+            background-color: rgba(240, 120, 0, 1); /* go orange */
+            left: 50%;
+            right: 0%;
+            border-radius: 0px;
+          }
+          #runjs {
+            background-color: rgba(0, 150, 50, 0.8);
+            top: 195px;
+            left: 23%;
+            right: 67%;
+          }
+          #runpython {
+            top: 195px;
+            background-color: rgba(0, 150, 50, 0.8);
+            left: 23%;
+            right: 67%;
+          }
+          #title {
+            font-family: 'AvenirNext-Bold';
+            text-align: center;
+            font-size: 80px;
+            margin-top: 0px;
+          }
+          #subtitle {
+            font-family: 'Avenir';
+            text-align: center;
+            font-size: 23px;
+            margin-top: -6px;
+          }
+          #select {
+            font-family: 'Avenir';
+            font-size: 23px;
+            margin-left: 50%;
+            margin-right: 0%;
+            text-align: center;
+            margin-top: 70px;
+          }
+          #buttonplace {
+            margin-top: 10px;
+            margin-left: 50%;
+          }
+          .buttons {
+            background-color: rgb(220, 220, 220);
+            height: 25px;
+            font-family: 'Avenir';
+            font-size: 15px;
+            border-style: none;
+            padding-left: 5px;
+            padding-right: 5px;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+
+          }
+          .buttons2 {
+            background-color: rgb(220, 220, 220);
+            border-color: rgb(0, 0, 200);
+            border-radius: 3px;
+            height: 25px;
+            font-family: 'Avenir';
+            font-size: 15px;
+            padding-left: 5px;
+            padding-right: 5px;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+          }
+          .solved {
+            background-color: rgba(0, 220, 0, 0.3);
+            height: 25px;
+            font-family: 'Avenir';
+            font-size: 15px;
+            border-style: none;
+            padding-left: 5px;
+            padding-right: 5px;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+
+          }
+          .solved2 {
+            background-color: rgba(0, 220, 0, 0.3);
+            border-color: rgb(0, 0, 200);
+            border-radius: 3px;
+            height: 25px;
+            font-family: 'Avenir';
+            font-size: 15px;
+            padding-left: 5px;
+            padding-right: 5px;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+          }
+          #prob {
+            position: absolute;
+            top: 290px;
+            height: 160px;
+            right: 1%;
+            left: 51%;
+            padding: 20px;
+            border-style: solid;
+            border-color: 'rgb(0,0,0)';
+            border-width: 1px;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: left;
+            font-family: 'Monaco';
+            overflow: auto;
+          }
+          #testcases {
+            position: absolute;
+            top: 510px;
+            bottom: 40px;
+            right: 1%;
+            left: 51%;
+            padding: 20px;
+            border-style: solid;
+            border-color: 'rgb(0,0,0)';
+            border-width: 1px;
+            border-radius: 12px;
+            font-size: 20px;
+            text-align: left;
+            font-family: 'Monaco';
+            overflow: auto;
+          }
+          #probtitle {
+            margin-top: 0px;
+            margin-left: 0%;
+            margin-right: 0%;
+            font-size: 28px;
+            font-family: 'AvenirNext-Bold';
+            text-align: center;
+          }
+
+          #statement {
+            margin-left: 0%;
+            margin-right: 0%;
+            padding-left: 15px;
+            padding-right: 15px;
+            font-size: 19px;
+            font-family: 'Avenir';
+            margin-top: -22px;
+            text-align: left;
+          }
+
+
+          .green {
+            background-color: rgba(0, 200, 0, 0.3);
+            text-align: center;
+            padding-left: 0px;
+            padding-right: 0px;
+          }
+
+          .red {
+            background-color: rgba(200, 0, 0, 0.3);
+            text-align: center;
+            padding-left: 0px;
+            padding-right: 0px;
+          }
+
+          .gray {
+            background-color: rgba(220, 220, 220);
+            text-align: center;
+            padding-left: 0px;
+            padding-right: 0px;
+          }
+
+          #testcase {
+            display: flex;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            color: rgb(255, 0, 0);
+            border-style: none;
+            width: 100%;
+          }
+
+          #number {
+            position: absolute;
+            margin-left: 1%;
+            width: 17%;
+            padding-top: 7px;
+            text-align: center;
+            font-family: 'AvenirNext-Bold';
+            font-size: 17px;
+          }
+
+          #data {
+            position: absolute;
+            margin-left: 19%;
+            width: calc(17% - 12px);
+            padding-top: 6px;
+            padding-left: 12px;
+            padding-right: 0px;
+            font-family: 'Monaco';
+            font-size: 17px;
+            text-align: left;
+
+            overflow: auto;
+            whitespace: nowrap;
+          }
+
+          #expected {
+            position: absolute;
+            margin-left: 37%;
+            width: calc(17% - 5px);
+            padding-top: 6px;
+            padding-left: 12px;
+            padding-right: 0px;
+            font-family: 'Monaco';
+            font-size: 17px;
+            overflow: auto;
+            whitespace: nowrap;
+            text-align: left;
+
+          }
+
+          #testoutput {
+            position: absolute;
+            margin-left: 56%;
+            width: calc(17% - 12px);
+            padding-top: 6px;
+            padding-left: 12px;
+            padding-right: 0px;
+            font-family: 'Monaco';
+            font-size: 17px;
+
+            overflow: auto;
+            whitespace: nowrap;
+            text-align: left;
+
+          }
+
+          #debug {
+            position: absolute;
+            margin-left: 74%;
+            width: calc(17.5%);
+            padding-top: 6px;
+            padding-left: 12px;
+            padding-right: 0px;
+            font-family: 'Monaco';
+            font-size: 17px;
+
+            overflow: auto;
+            whitespace: nowrap;
+            text-align: left;
+
+          }
+
+
+          #lnumber {
+            position: absolute;
+            margin-left: -1%;
+            width: 22%;
+            height: 30px;
+            text-align: center;
+            font-family: 'AvenirNext-Bold';
+            font-size: 15px;
+          }
+
+          #ldata {
+            position: absolute;
+            margin-left: 19%;
+            width: calc(22% - 12px);
+            padding-left: 3%;
+            height: 28px;
+            font-family: 'AvenirNext-Bold';
+            font-size: 15px;
+
+            overflow: auto;
+            whitespace: nowrap;
+          }
+
+          #lexpected {
+            position: absolute;
+            margin-left: 37%;
+            width: calc(22% - 12px);
+            padding-left: 1%;
+            height: 28px;
+            font-family: 'AvenirNext-Bold';
+            font-size: 15px;
+            overflow: auto;
+            whitespace: nowrap;
+          }
+
+          #ltestoutput {
+            position: absolute;
+            margin-left: 56%;
+            width: calc(23% - 12px);
+            padding-left: 1.5%;
+            height: 28px;
+            font-family: 'AvenirNext-Bold';
+            font-size: 15px;
+
+            overflow: auto;
+            whitespace: nowrap;
+          }
+
+          #ldebug {
+            position: absolute;
+            margin-left: 74%;
+            width: calc(23% - 12px);
+            padding-left: 2%;
+            height: 28px;
+            font-family: 'AvenirNext-Bold';
+            font-size: 15px;
+
+            overflow: auto;
+            whitespace: nowrap;
+          }
+
+        </style>
+    </head>
+    <body onload="brython()">
+
+  <div id="title">Keylogging IDE</div>
+  <div id="subtitle">Session ID: </div>
+
+  <button type="button" class="button" id="selectpython" onclick="python()"> Python  </button>
+  <button type="button" class="button" id="selectjs" onclick="js()"> JavaScript  </button>
+  <button type="button" class="button" id="backgroundpython" hidden=true>  Python </button>
+  <button type="button" class="button" id="backgroundjs">  JavaScript </button>
+  <!--<button type="button" class="button" id="runpython"> Run  </button>
+  <button type="button" class="button" id="runjs" onclick="run()"> Run  </button>!-->
+
+  <div id="select">Select a Problem:</div>
+  <div id="buttonplace"></div>
+  <div id="prob">
+  <p id="probtitle"></p>
+  <p id="statement"></p>
+  </div>
+  <div id="testcases">
+
+  </div>
+
+  <div id="editor"></div>
+
+  <!-- hidden text fields used to communicate data between this file and database.js !-->
+  <div hidden=true id="text"></div>
+  <div hidden=true id="inputtext"></div>
+  <div hidden=true id="edit"></div>
+  <div hidden=true id="editortype">javascript</div>
+
+  <div hidden=true id="sig"></div>
+  <div hidden=true id="args"></div>
+  <div hidden=true id="time"></div>
+  <div hidden=true id="pyresult"></div>
+  <div hidden=true id="pydebug"></div>
+  <div hidden=true id="index"></div>
+  <div hidden=true id="curtestcase"></div>
+  <div hidden=true id="starttime"></div>
+  <div hidden=true id="lasttest"></div>
+  <div hidden=true id="lastprob"></div>
+  <div hidden=true id="laststart"></div>
+
+  <div hidden=true id="heighttest"></div>
+
+  <div hidden=true id="jsdebug"></div>
+
+
+
+  <script src="./ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script src="./database.js" type="module"></script>
+
+  <script>
+    // Ordered list of problems given to the user
+
+    var problemset = [];
+
+    function readConfigFile(name, index) {
+      var file = "./problems/" + name + ".txt";
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", file, false);
+      rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4) {
+          if (rawFile.status === 200 || rawFile.status == 0) {
+            var file = rawFile.responseText;
+
+            file = file.split("\n");
+            problemset = file.slice(0, file.length - 1);
+
+          }
+        }
+      }
+      rawFile.send(null);
+    }
+
+    readConfigFile("config");
+
+    TIME_LIMIT_MS = 500; //Time limit for all problems in milliseconds
+
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/textmate");
+    editor.session.setMode("ace/mode/javascript");
+    editor.setOptions({fontSize: '12pt', behavioursEnabled: false})
+
+    var lang = "js";
+
+    // Sets the mode of the editor to Python
+    function python() {
+      //document.getElementById("runjs").hidden = true;
+      //document.getElementById("runpython").hidden = false;
+      lang = "python";
+      document.getElementById("backgroundjs").hidden = true;
+      document.getElementById("backgroundpython").hidden = false;
+      document.getElementById("editortype").innerHTML = "python";
+      editor.session.setMode("ace/mode/python");
+    }
+
+    // Sets the mode of the editor to JS
+    function js() {
+      //document.getElementById("runjs").hidden = false;
+      //document.getElementById("runpython").hidden = true;
+      lang = "js";
+      document.getElementById("backgroundjs").hidden = false;
+      document.getElementById("backgroundpython").hidden = true;
+      document.getElementById("editortype").innerHTML = "javascript";
+      editor.session.setMode("ace/mode/javascript");
+    }
+
+    var solvedpy = [];
+    var solvedjs = [];
+
+    var data = [];
+    for (var i = 0 ; i < problemset.length ; i++) {
+      data.push([]);
+      solvedpy.push(false);
+      solvedjs.push(false);
+    }
+
+    function readTextFile(name, index) {
+      var file = "./problems/" + name + ".txt";
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", file, false);
+      rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4) {
+          if (rawFile.status === 200 || rawFile.status == 0) {
+            var file = rawFile.responseText;
+
+            file = file.split("\n~~~\n");
+
+            for (var i = 0 ; i < file.length ; i++) {
+              file[i] = file[i].split("\n");
+            }
+
+
+            data[index] = file;
+
+          }
+        }
+      }
+      rawFile.send(null);
+    }
+
+    for (var i = 0 ; i < problemset.length ; i++) {
+      readTextFile(problemset[i], i);
+
+      //var wid = "calc((100 / " + problemset.length + ")% - 5px)";
+      var wp = 100 / problemset.length;
+      var wid = "calc(" + wp + "% - 5.5px)";
+
+      document.getElementById("buttonplace").innerHTML += "<button class=\"buttons\" id=\"b" + (i+1) + "\" onclick=updateProblem(" + (i+1) + ") style=\"width:" + wid + "; margin-left:5px;\">" + (i+1) + "</button>";
+
+    }
+
+    var ind = 1;
+
+    var lp = -1;
+    var ls = [];
+    for (var i = 0 ; i < 100 ; i++) {
+      ls.push(true);
+    }
+
+    var jscodes = [];
+    var pycodes = [];
+    var oldValue = "";
+    var ov = "";
+
+    for (var i = 0 ; i < problemset.length ; i++) {
+      jscodes.push("function " + data[i][2][0] + " {\n    return 0;\n}");
+      pycodes.push("def " + data[i][2][0] + ":\n    ");
+    }
+
+    var globalStartTime = -1;
+
+    var global_testcases;
+    var global_actanswers;
+    var global_answers;
+    var global_var_expected;
+    var global_expected;
+    var global_index;
+    var global_results;
+    var global_num;
+    var global_sig;
+    var global_debug;
+
+    var olang = "";
+
+    function parse_testcase(tc) {
+      if (typeof tc == 'object') {
+        tc = tc.join("");
+      }
+      tc = tc.split("");
+      var tcs = "";
+      var args = [];
+      var bal = 0;
+      for (var j = 0 ; j < tc.length ; j++) {
+        if (tc[j] == " " && bal == 0) {
+          args.push(tcs);
+          tcs = "";
+        }
+        else {
+          tcs += tc[j];
+          if (tc[j] == "[") {
+            bal++;
+          }
+          if (tc[j] == "]") {
+            bal--;
+          }
+        }
+      }
+      args.push(tcs);
+
+      for (var j = 0 ; j < args.length ; j++) {
+        var inp = args[j];
+        if (inp[0] == "\"") {
+          //string
+          args[j] = args[j].split("").slice(1, args[j].length - 1).join("");
+        }
+        else if (inp[0] == "[") {
+          var arrcode = "return " + inp + ";";
+          var arrayAnswer = Function(arrcode)();
+          args[j] = arrayAnswer;
+        }
+        else {
+          args[j] = parseInt(args[j]);
+        }
+      }
+
+      return args;
+    }
+
+    function updateProblem(index) {
+      var changed = false;
+      if (editor.getValue() != ov || index != lp || olang != lang) {
+        changed = true;
+      }
+
+      if (!changed) {
+        return;
+      }
+
+
+      var startTime = Date.now();
+      globalStartTime = startTime;
+
+      if (index == lp && olang == lang) {
+        var code = editor.getValue();
+        if (lang == "python") {
+          pycodes[index - 1] = code;
+        }
+        else {
+          jscodes[index - 1] = code;
+        }
+      }
+      else {
+        if (lang == "python") {
+          editor.setValue(pycodes[index-1]);
+          editor.clearSelection();
+          document.getElementById("text").innerHTML = pycodes[index-1];
+        }
+        else {
+          editor.setValue(jscodes[index-1]);
+          editor.clearSelection();
+        }
+      }
+      ind = index;
+
+      for (var i = 0 ; i < problemset.length ; i++) {
+        if ((solvedpy[i] && lang == "python") || (solvedjs[i] && lang == "js")) {
+          document.getElementById("b" + (i+1)).className = "solved";
+        }
+        else {
+          document.getElementById("b" + (i+1)).className = "buttons";
+        }
+      }
+      if ((solvedpy[index-1] && lang=="python") || (solvedjs[index-1] && lang=="js")) {
+        document.getElementById("b" + index).className = "solved2";
+      }
+      else {
+        document.getElementById("b" + index).className = "buttons2";
+      }
+
+      var pd = data[index - 1];
+
+      document.getElementById("probtitle").innerHTML = pd[0];
+      document.getElementById("statement").innerHTML = pd[1].join("<br>");
+
+      var testcases = pd[3];
+      var expected = pd[4];
+
+      var answers = [];
+      var actanswers = [];
+
+      var var_expected = [];
+
+      for (var i = 0 ; i < testcases.length ; i++) {
+        var_expected[i] = parse_testcase(expected[i])[0];
+      }
+
+      global_testcases = testcases;
+      global_answers = [];
+      global_actanswers = [];
+      global_var_expected = var_expected;
+      global_expected = expected;
+      global_index = index;
+      global_results = [];
+      global_num = 0;
+      global_debug = [];
+      global_sig = pd[2][0].split("(")[0];
+
+      for (var i = 0 ; i < testcases.length ; i++) {
+        global_answers.push("");
+      }
+
+      runTest();
+
+      lp = index;
+      olang = lang;
+      ov = editor.getValue();
+    }
+
+    function runTest() {
+
+      document.getElementById("testcases").innerHTML = "";
+
+      var cor = 0;
+
+      var bot = 0;
+
+      document.getElementById("testcases").innerHTML += "<span id=\"lnumber\" style=\"margin-top: " + (0) + "px; margin-bottom: " + bot + "px;\">" + "Test Case #" + "</span>";
+      document.getElementById("testcases").innerHTML += "<span id=\"ldata\" style=\"margin-top: " + (0) + "px; margin-bottom: " + bot + "px;\">" + "Test Data" + "</span>";
+      document.getElementById("testcases").innerHTML += "<span id=\"lexpected\" style=\"margin-top: " + (0) + "px; margin-bottom: " + bot + "px;\">" + "Correct Output" + "</span>";
+      document.getElementById("testcases").innerHTML += "<span id=\"ltestoutput\" style=\"margin-top: " + (0) + "px; margin-bottom: " + bot + "px;\">" + "Actual Output "  + "</span>";
+      document.getElementById("testcases").innerHTML += "<span id=\"ldebug\" style=\"margin-top: " + (0) + "px; margin-bottom: " + bot + "px;\">" + "Debug Output"  + "</span>";
+
+      var ht = 25;
+
+      for (var i = 0 ; i < global_testcases.length ; i++) {
+        if (i < global_num) {
+          cor += (global_results[i]);
+        }
+
+        var oldTestCases = document.getElementById("testcases").innerHTML;
+
+        document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
+        document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
+        document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
+        document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
+        document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"test" + i + " red\" style=\"margin-top: " + (ht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
+
+        var maxHeight = 0;
+        var elList = document.getElementsByClassName("test" + i);
+        for (var j = 0 ; j < elList.length ; j++) {
+          maxHeight = Math.max(maxHeight, elList[j].offsetHeight);
+        }
+
+        document.getElementById("testcases").innerHTML = oldTestCases;
+
+        var iht = maxHeight;
+
+        if (i < global_num && global_results[i]) {
+          document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"green\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
+        }
+        else if (i < global_num) {
+          document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"red\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
+        }
+        else {
+          document.getElementById("testcases").innerHTML += "<span id=\"number\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + (i+1) + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"data\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_testcases[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"expected\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_expected[i] + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"testoutput\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_answers[i]  + "</span>";
+          document.getElementById("testcases").innerHTML += "<span id=\"debug\" class=\"gray\" style=\"margin-top: " + (ht) + "px; height: " + (iht) + "px; margin-bottom: " + bot + "px;\">" + global_debug[i]  + "</span>";
+        }
+
+        ht += iht + 12;
+      }
+
+      if (global_num < global_testcases.length) {
+        var args = parse_testcase(global_testcases[global_num]);
+
+        startTime = Date.now();
+        globalStartTime = startTime;
+
+        if (lang == "js") {
+          document.getElementById("jsdebug").innerHTML = "";
+
+          aans = run(global_sig, args, startTime);
+
+          ans = deep_convert(aans);
+
+          global_actanswers[global_num - 1] = aans;
+          global_answers[global_num - 1] = ans;
+
+          var equal = (JSON.stringify(global_actanswers[global_num - 1]) == JSON.stringify(global_var_expected[global_num - 1]));
+
+          global_results.push(equal);
+        }
+        else if (lang == "python") {
+          document.getElementById("sig").innerHTML = global_sig;
+          document.getElementById("args").innerHTML = global_testcases[global_num];
+          document.getElementById("time").innerHTML = globalStartTime;
+          document.getElementById("index").innerHTML = global_index;
+          document.getElementById("curtestcase").innerHTML = global_num;
+          document.getElementById("starttime").innerHTML = globalStartTime;
+        }
+
+      }
+      else {
+
+          if (cor == global_testcases.length) {
+            if (lang == "python") {
+              solvedpy[global_index - 1] = true;
+            }
+            else {
+              solvedjs[global_index - 1] = true;
+            }
+            document.getElementById("b" + (global_index)).className = "solved2";
+          }
+          else {
+            if (lang == "python") {
+              solvedpy[global_index - 1] = false;
+            }
+            else {
+              solvedjs[global_index - 1] = false;
+            }
+            document.getElementById("b" + (global_index)).className = "buttons2";
+          }
+      }
+    }
+
+    function upd() {
+      updateProblem(ind);
+      window.requestAnimationFrame(upd, 1000);
+    }
+
+    upd();
+
+
+
+    function deep_convert(args) {
+      if (typeof args == "object") {
+        var answer = "["
+        for (var i = 0 ; i < args.length ; i++) {
+          if (typeof args[i] == "number") {
+            answer += args[i];
+          }
+          else if (typeof args[i] != "object") {
+            answer += "\"" + args[i] + "\"";
+          }
+          else {
+            answer += deep_convert(args[i]);
+          }
+          if (i < args.length - 1) {
+            answer += ",";
+          }
+        }
+        answer += "]";
+        return answer;
+      }
+      else {
+        return args;
+      }
+    }
+
+    function run(funcname, args) {
+      var code = editor.getValue();
+      code = code.split("\n");
+      var x = 2;
+      // Sets the initial code to eventually be run, which includes a function to retrieve input step by step
+      //var newcode = "var retStr = \"\"\nvar result = \"\"\n\ntry { \nvar origStartTime = globalStartTime;\n";
+      var newcode = "var retStr = \"\"\nvar result = \"\"\n\n\nvar origStartTime = globalStartTime;\n";
+
+      //Converts all console.log statements to adding to a variable, since console.log will do nothing when you run Function() on it
+      //Also converts all readline() statements to calling the customized nextInput() function above
+      for (var i = 0 ; i < code.length ; i++) {
+        newcode += code[i] + "\n";
+        var contains = false;
+        for (var j = 0 ; j < code[i].length ; j++) {
+          contains |= (code[i][j] == '}');
+        }
+        if (!contains) {
+          newcode += "if (globalStartTime != origStartTime || Date.now() - origStartTime > TIME_LIMIT_MS) { return \"Time Limit Exceeded\"; }\n";
+        }
+        newcode += "\n";
+      }
+
+      code = newcode;
+
+      var newcode = "";
+
+      var finalPrint = "";
+      var i = 0;
+      while (i < code.length) {
+        var print = true;
+        for (var j = 0 ; j < 11 ; j++) {
+          if (code[i+j] != "console.log".split("")[j]) {
+            print = false;
+          }
+        }
+        var inp = true;
+        for (var j = 0 ; j < 10 ; j++) {
+          if (code[i+j] != "readline()".split("")[j]) {
+            inp = false;
+          }
+        }
+        if (!print && !inp) {
+          newcode += code[i];
+          i++;
+        }
+        else if (inp) {
+          newcode += "nextInput()";
+          i += 10;
+        }
+        else {
+          var j = 11;
+          var bal = 0;
+          var seen = false;
+          var toPrint = "";
+
+          // Parses possible nested parentheses in console.log statement. This has a possible edge case if there is a parenthesis inside of quotations which I will fix
+          while ((bal != 0 || !seen) && i+j < code.length) {
+            if (code[i+j] == '(') {
+              bal++;
+              seen = true;
+            }
+            else if (code[i+j] == ')') {
+              bal--;
+            }
+            if (bal > 0 || code[i+j] == '(' || code[i+j] == ')') {
+              toPrint += code[i+j];
+            }
+            j++;
+          }
+
+          newcode += "document.getElementById(\"jsdebug\").innerHTML += " + toPrint + " + \"<br>\"\n";
+
+          i = i+j;
+        }
+      }
+
+      //newcode += "return retStr.join(\"<br>\");";
+
+      args = deep_convert(args);
+
+      //newcode += "\n  result = " + funcname + "(" + args.split("").slice(1, args.length-1).join("") + ");\n}\ncatch(e) {\nresult = \"Syntax Error\"}\nglobal_num++;\nwindow.setTimeout(runTest, 1);\nreturn result;";
+      newcode += "\n  result = " + funcname + "(" + args.split("").slice(1, args.length-1).join("") + ");\n\n\nglobal_num++;\nwindow.setTimeout(runTest, 1);\nreturn result;";
+
+      console.log(newcode);
+      //newcode += "return Date.now() - globalStartTime;";
+
+      // Runs the JS code, and updates the editor output
+
+      try {
+        var res = Function(newcode)();
+        global_debug[global_num - 1] = document.getElementById("jsdebug").innerHTML;
+        return res;
+      }
+      catch (e) {
+        global_num++;
+        global_debug[global_num - 1] = document.getElementById("jsdebug").innerHTML;
+        window.setTimeout(runTest, 1);
+        return "Syntax Error";
+      }
+
+    }
+
+    var oldValue = "";
+    var ost;
+    var orow;
+    var ocol;
+
+    function updateEditor() {
+
+      if (document.getElementById("pyresult").innerHTML.length > 0) {
+        jtest = document.getElementById("lasttest").innerHTML;
+        jprob = document.getElementById("lastprob").innerHTML;
+        jstart = document.getElementById("laststart").innerHTML;
+
+
+        if (!(jtest != global_num || jprob != global_index || jstart != globalStartTime)) {
+
+
+
+          global_num++;
+
+          ans = document.getElementById("pyresult").innerHTML;
+
+          var debug = document.getElementById("pydebug").innerHTML;
+
+
+          aans = parse_testcase(ans)[0];
+
+
+          global_actanswers[global_num - 1] = aans;
+          global_answers[global_num - 1] = ans;
+
+          var equal = (JSON.stringify(global_actanswers[global_num - 1]) == JSON.stringify(global_var_expected[global_num - 1]));
+
+          global_results.push(equal);
+          global_debug[global_num - 1] = debug;
+
+          document.getElementById("pyresult").innerHTML = "";
+
+          runTest();
+        }
+      }
+
+      var nv = editor.getValue();
+      var pos = editor.getCursorPosition();
+      var row = pos.row;
+      var col = pos.column;
+
+      if (nv != oldValue) {
+
+        // Figures out exactly which characters were edited from one keystroke
+        // This was a surprisingly difficult task, because in one keystroke the user could theoretically delete any number of characters and replace them with any number of characters (e.g. if they deleted a lot of code and pasted other code in simultaneously using Ctrl-V)
+
+        nv = nv.split("");
+        oldValue = oldValue.split("");
+
+        var i = 0;
+        var j = 0;
+
+        while (i < nv.length) {
+          if (i >= oldValue.length || nv[i] != oldValue[i]) break;
+          i++;
+        }
+
+        while (j < nv.length && i+j < nv.length && i+j < oldValue.length) {
+          if (j >= oldValue.length || nv[nv.length - j - 1] != oldValue[oldValue.length -  j - 1]) break;
+          j++;
+        }
+
+        var newSlice = "";
+        var oldSlice = "";
+
+        for (var k = i ; nv.length - k - 1 >= j ; k++) {
+          newSlice += nv[k];
+        }
+        for (var k = i ; oldValue.length - k - 1 >= j ; k++) {
+          oldSlice += oldValue[k];
+        }
+
+        var line = 1;
+        var char = 1;
+
+        for (var k = 0 ; k < i ; k++) {
+          if (oldValue[k] == '\n') {
+            line++;
+            char = 1;
+          }
+          else {
+            char++;
+          }
+        }
+
+        var edit;
+
+        edit = [oldSlice, newSlice, line, char, i];
+
+        document.getElementById("edit").innerHTML = Date.now() + "~~~" + edit.join("~~~");
+
+      }
+
+      orow = row;
+      ocol = col;
+      oldValue = editor.getValue();
+
+      ost = editor.getSelectedText();
+
+      document.getElementById("text").innerHTML = editor.getValue();
+
+      document.getElementById("index").innerHTML = global_index;
+
+      window.requestAnimationFrame(updateEditor, 1);
+    }
+
+    updateEditor();
+
+    </script>
+
+    <script type="text/python">
+
+#//Uses Brython to run Python code in JS - exec() in Python will execute Python code, and this was easier than running Python code directly in JS (doing so would likely require a server.)
+from browser import document
+from browser.timer import set_timeout, clear_timeout
+import random
+import time
+
+finalStr = ""
+debugStr = ""
+
+inputIter = ""
+x = 0
+
+def deep_convert(args):
+  if (isinstance(args, list)):
+    answer = "["
+    for i in range(0, len(args)):
+      answer += deep_convert(args[i])
+      if (i < len(args) - 1):
+        answer += ", "
+    answer += "]";
+    return answer
+  elif isinstance(args, int):
+    return str(args);
+  elif isinstance(args, str):
+    return "\"" + args + "\""
+  else:
+    return "undefined"
+
+def run():
+  global finalStr
+  global x
+  global debugStr
+
+  debugStr = ""
+
+  set_timeout(run, 1);
+  if (len(document.getElementById("sig").innerHTML) > 0):
+    sig = document.getElementById("sig").innerHTML;
+
+    tc = list(document.getElementById("args").innerHTML);
+
+    prob = document.getElementById("index").innerHTML;
+    testcase = document.getElementById("curtestcase").innerHTML;
+    startTime = document.getElementById("starttime").innerHTML;
+
+    document.getElementById("sig").innerHTML = "";
+
+    gstart = time.time();
+
+    tcs = "";
+    args = [];
+    bal = 0;
+    for j in range(0, len(tc)):
+      if tc[j] == " " and bal == 0:
+        args.append(tcs);
+        tcs = "";
+      else:
+        tcs += tc[j];
+        if (tc[j] == "["):
+          bal += 1
+        if (tc[j] == "]"):
+          bal -= 1
+
+    args.append(tcs);
+
+    for j in range(0, len(args)):
+      inp = args[j];
+      if (inp[0] == "\"" or inp[0] == "'"):
+        args[j] = "\"" + "".join(list(args[j])[1:-1]) + "\""
+      elif (inp[0] == "["):
+        arrcode = "x = " + inp
+        exec(arrcode, globals())
+        args[j] = x
+      else:
+        args[j] = int(args[j])
+
+    allCode = document.getElementById("text").innerHTML.split("\n");
+    imports = ""
+    newCode = "def allcode():\n    import random\n    import time\n    start = time.time()\n";
+    indent = 4
+
+
+    for i in range(0, len(allCode)):
+      if (len(allCode[i]) >= 4 and "".join(list(allCode[i])[:4]) == "from") or (len(allCode[i]) >= 6 and "".join(list(allCode[i])[:6]) == "import"):
+        imports += allCode[i] + "\n"
+        continue
+      spaceCount = 0
+      j = 0
+      while j < len(allCode[i]) and allCode[i][j] == " ":
+        spaceCount += 1
+        j += 1
+      if spaceCount == 2:
+        indent = 2
+
+      elcase = False
+      ls = list(allCode[i])
+      for j in range(0, len(ls) - 4):
+        if "".join(ls[j:j+5]) == "else:" or "".join(ls[j:j+4]) == "elif":
+          elcase = True
+      if len(allCode[i]) and list(allCode[i])[-1] != " " and (not elcase):
+        newCode += (" " * (spaceCount + indent)) + "if random.randint(1, 30) == 27 and time.time() - start >= 1.0:\n"
+        newCode += (" " * (spaceCount + indent * 2)) + "return \"Time Limit Exceeded\"\n"
+      newCode += (" " * indent) + allCode[i]
+      newCode += "\n";
+      if len(allCode[i]) >= spaceCount + 3 and "".join(list(allCode[i])[spaceCount:spaceCount+3]) == "def":
+        newCode += (" " * indent * 2) + "global debugStr\n"
+    newCode += "    return " + sig + "(" + ",".join([str(i) for i in args]) + ")\n"
+    newCode += "finalStr = allcode()"
+    newCode = list(newCode)
+
+    finalCode = imports + "\n"
+
+    i = 0
+    while (i < len(newCode)):
+      if newCode[i] != '&':
+        finalCode += newCode[i]
+        i += 1
+      elif i < len(newCode) - 4 and "".join(list(newCode)[i:i+4]) == "&lt;":
+        finalCode += "<"
+        i += 4
+      elif i < len(newCode) - 4 and "".join(list(newCode)[i:i+4]) == "&gt;":
+        finalCode += ">"
+        i += 4
+      elif i < len(newCode) - 5 and "".join(list(newCode)[i:i+5]) == "&amp;":
+        finalCode += "&"
+        i += 5
+      else:
+        finalCode += newCode[i]
+        i += 1
+
+    newCode = finalCode
+
+    newCode = newCode.split("\n")
+
+    for i in range(0, len(newCode)):
+      j = 0
+      while j < len(newCode[i]) and newCode[i][j] == " ":
+        j += 1
+
+      if j < len(newCode[i]) - 6 and newCode[i][j] == "p" and newCode[i][j+1] == "r" and newCode[i][j+2] == "i" and newCode[i][j+3] == "n" and newCode[i][j+4] == "t" and newCode[i][j+5] == "(":
+        newCode[i] = (" " * (j)) + "debugStr += str(" + "".join(list(newCode[i])[(6 + j):-1]) + ") + \"<br>\""
+
+    newCode = "\n".join(newCode)
+
+    #//Runs the Python code, storing all print() statements to the finalStr variable
+
+    document.getElementById("lastprob").innerHTML = prob;
+    document.getElementById("lasttest").innerHTML = testcase;
+    document.getElementById("laststart").innerHTML = startTime;
+
+
+    print("executing: ")
+
+    try:
+      exec(newCode, globals());
+    except:
+      document.getElementById("pyresult").innerHTML = "Syntax Error";
+      document.getElementById("pydebug").innerHTML = debugStr;
+      return;
+
+    finalStr = deep_convert(finalStr)
+
+    document.getElementById("pyresult").innerHTML = finalStr;
+
+    document.getElementById("pydebug").innerHTML = debugStr;
+
+    print(document.getElementById("pyresult"))
+
+
+run();
+
+  </script>
+  </body>
+</html>

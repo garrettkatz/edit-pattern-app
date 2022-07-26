@@ -1,18 +1,18 @@
 presurvey
-product 300 simplesurvey PYTHON
-sumthree 300 simplesurvey JS
-inrange 300 simplesurvey
-fizzbuzz 300 simplesurvey
-factorial 300 simplesurvey
-arraysum 300 simplesurvey
-double 300 simplesurvey
-collatz 300 simplesurvey
-stringsort 300 simplesurvey
-validbracket 450 simplesurvey
-binomial 300 simplesurvey
-positionsort 450 simplesurvey
-minesweeper 600 simplesurvey
-tictactoe 600 simplesurvey
-binomial2 900 simplesurvey
-shortestflights 2400 simplesurvey
+product 300 simplesurvey PYTHON printing
+sumthree 300 simplesurvey JS logic
+inrange 300 simplesurvey BOTH
+fizzbuzz 300 simplesurvey BOTH looping
+factorial 300 simplesurvey BOTH lists
+arraysum 300 simplesurvey BOTH
+double 300 simplesurvey BOTH
+collatz 300 simplesurvey BOTH
+stringsort 300 simplesurvey BOTH
+validbracket 450 simplesurvey BOTH
+binomial 300 simplesurvey BOTH
+positionsort 450 simplesurvey BOTH 2Dlists
+minesweeper 600 simplesurvey BOTH
+tictactoe 600 simplesurvey BOTH
+binomial2 900 simplesurvey BOTH
+shortestflights 2400 simplesurvey BOTH
 postsurvey

@@ -603,6 +603,55 @@ TODO:
             cursor: pointer;
           }
 
+          #restartbutton {
+            margin-left: 30px;
+            background-color: rgb(0, 0, 80);
+            color: rgb(200, 150, 0);
+            font-family: 'Avenir';
+            font-size: 22px;
+            border-style: none;
+            border-radius: 4px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            cursor: pointer;
+          }
+
+          #tutorial_code {
+            font-family: 'Monaco';
+            font-size: 15px;
+            background-color: rgb(230, 230, 230);
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+
+          #tutorial_normal {
+            font-family: 'Avenir';
+            font-size: 20px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+          }
+
+          #tutorial_med {
+            font-family: 'Avenir';
+            font-size: 30px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+          }
+
+          #tutorial_big {
+            font-family: 'Avenir';
+            font-size: 40px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+          }
+
+          #tutorial_huge {
+            font-family: 'Avenir';
+            font-size: 50px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+          }
+
 
 
         </style>
@@ -617,7 +666,7 @@ TODO:
   </div>
 
   <div id="loggedin" hidden=true>
-  <div id="subtitle"><span id="id">Session ID: </span><button id="signout">Log Out</button></div>
+  <div id="subtitle"><span id="id">Session ID: </span><button id="signout">Log Out</button><button id="restartbutton">Restart Session</button></div>
 
   <!-- Buttons for switching languages !-->
   <button type="button" class="button" id="selectpython" onclick="python()"> Python  </button>
@@ -685,6 +734,8 @@ TODO:
 
   <script>
 
+    var veryStart = Date.now();
+
     var uid;
     var email;
     var name;
@@ -735,11 +786,14 @@ TODO:
     var correct;
     var times = [];
     var surveys = [];
+    var tutorials = [];
+    var tutorialtext = [];
     var presurvey;
     var postsurvey;
     var surveydata = [];
     var answers = [];
     var survey = true;
+    var tutorial = false;
     var lastsurvey = false;
     var problem = -1;
     var totsolved = 0;
@@ -778,6 +832,12 @@ TODO:
                 else {
                   langs.push("BOTH");
                 }
+                if (file[i][4]) {
+                  tutorials.push(file[i][4]);
+                }
+                else {
+                  tutorials.push("");
+                }
               }
             }
           }
@@ -795,7 +855,15 @@ TODO:
     editor.setTheme("ace/theme/textmate");
     editor.session.setMode("ace/mode/javascript");
     editor.setOptions({fontSize: '12pt', behavioursEnabled: false, enableBasicAutocompletion: true, enableLiveAutocompletion: true}); // Sets up the editor
+    var copyText;
+    var pasted = false;
 
+    editor.on("copy", function(text) {
+      copyText = text["text"];
+    });
+    editor.on("paste", function(text) {
+      pasted = true;
+    });
     var lang = "js";
 
     // Sets the mode of the editor to Python
@@ -843,6 +911,76 @@ TODO:
             }
 
             data[index] = file;
+
+          }
+        }
+      }
+      rawFile.send(null);
+    }
+
+    function readTutorialFile(name, problem) {
+      var file = "./tutorials/" + name + ".txt";
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", file, false);
+      rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4) {
+          if (rawFile.status === 200 || rawFile.status == 0) {
+            var file = rawFile.responseText;
+
+            var tutorial = [];
+
+            file = file.split("\n");
+
+            for (var i = 0 ; i < file.length ; i++) {
+              file[i] = file[i].split("").slice(1, file[i].length - 2).join("");
+              var nt = "";
+              for (var j = 0 ; j < file[i].length ; j++) {
+                if (file[i][j] != "\\") {
+                  nt += file[i][j];
+                }
+              }
+              file[i] = nt;
+            }
+
+            for (var i = 0 ; i < file.length ; i++) {
+              if (file[i].length >= 4 && file[i].split("").slice(0, 4).join("") == "[cd]") {
+                var first = true;
+                var last = true;
+                if (i > 0 && file[i-1].length >= 4 && file[i-1].split("").slice(0, 4).join("") == "[cd]") {
+                  first = false;
+                }
+                if (i < file.length - 1 && file[i+1].length >= 4 && file[i+1].split("").slice(0, 4).join("") == "[cd]") {
+                  last = false;
+                }
+                if (first && !last) {
+                  tutorial.push("<pre id=\"tutorial_code\">" + file[i].split("").slice(4, file[i].length).join("") + "<br>");
+                }
+                else if (!first && !last) {
+                  tutorial.push(file[i].split("").slice(4, file[i].length).join("") + "<br>");
+                }
+                else if (last && !first) {
+                  tutorial.push(file[i].split("").slice(4, file[i].length).join("") + "</pre>");
+                }
+                else {
+                  tutorial.push("<pre id=\"tutorial_code\">" + file[i].split("").slice(4, file[i].length).join("") + "</pre>");
+                }
+              }
+              else if (file[i].length >= 5 && file[i].split("").slice(0, 5).join("") == "[big]") {
+                tutorial.push("<div id=\"tutorial_big\">" + file[i].split("").slice(5, file[i].length).join("") + "</div>");
+              }
+              else if (file[i].length >= 5 && file[i].split("").slice(0, 5).join("") == "[med]") {
+                tutorial.push("<div id=\"tutorial_med\">" + file[i].split("").slice(5, file[i].length).join("") + "</div>");
+              }
+              else if (file[i].length >= 6 && file[i].split("").slice(0, 6).join("") == "[huge]") {
+                tutorial.push("<div id=\"tutorial_huge\">" + file[i].split("").slice(6, file[i].length).join("") + "</div>");
+              }
+              else {
+                tutorial.push("<div id=\"tutorial_normal\">" + file[i] + "</div>");
+              }
+              tutorialtext[problem] = tutorial;
+            }
+
+
 
           }
         }
@@ -906,6 +1044,12 @@ TODO:
 
     for (var i = 0 ; i < surveys.length ; i++) {
       readSurveyFile(surveys[i]); //Reads each survey file from the surveys folder
+    }
+
+    for (var i = 0 ; i < tutorials.length ; i++) {
+      if (tutorials[i].length) {
+        readTutorialFile(tutorials[i], i);
+      }
     }
 
     readSurveyFile(presurvey);
@@ -1008,8 +1152,15 @@ TODO:
         return;
       }
 
+      //if (tutorial) return;
+
+      //console.log("frame " + (Date.now() - veryStart));
+      //console.log("new code: ");
+      //console.log(jscodes[index-1]);
+
       var startTime = Date.now();
       globalStartTime = startTime;
+
 
       if (index == lp && olang == lang) {
         var code = editor.getValue();
@@ -1306,7 +1457,9 @@ TODO:
             i++;
           }
         }
-        pycodes[problem] = npc;
+        if (stat == "solving") {
+          pycodes[problem] = npc;
+        }
         var njc = "";
         var i = 0;
         fjscode = fjscode.split("");
@@ -1328,7 +1481,9 @@ TODO:
             i++;
           }
         }
-        jscodes[problem] = njc;
+        if (stat == "solving") {
+          jscodes[problem] = njc;
+        }
         totsolved = fcount;
 
         if (stat == "survey") {
@@ -1338,6 +1493,13 @@ TODO:
         else {
           survey = false;
           problem--;
+          if (stat != "tutorial") {
+            tutorials[problem] = "";
+            tutorial = false;
+          }
+          else {
+            tutorial = true;
+          }
           next(true);
           if (lang == "python") {
             oldValue = pycodes[problem];
@@ -1351,7 +1513,6 @@ TODO:
       }
 
       if (problem >= 0 && problem < problemset.length) {
-        document.getElementById("send_problem").innerHTML = problem;
         document.getElementById("send_pycode").innerHTML = pycodes[problem].split("\n").join("~~~");
         document.getElementById("send_jscode").innerHTML = jscodes[problem].split("\n").join("~~~");
         document.getElementById("send_solvecount").innerHTML = totsolved;
@@ -1362,15 +1523,23 @@ TODO:
         }
 
         else if (problem >= 0 && problem < problemset.length) {
-          if (survey) {
+
+          if (tutorial) {
+            status = "tutorial";
+            document.getElementById("send_problem").innerHTML = problem+1;
+          }
+          else if (survey) {
             status = "survey";
+            document.getElementById("send_problem").innerHTML = problem;
           }
           else {
             status = "solving";
+            document.getElementById("send_problem").innerHTML = problem;
           }
         }
         else {
           status = "survey";
+          document.getElementById("send_problem").innerHTML = problem;
         }
 
         document.getElementById("send_status").innerHTML = status;
@@ -1514,13 +1683,36 @@ TODO:
     var orow;
     var ocol;
 
-    function giveup() { //Function that is riggered when the user gives up on the current problem
+    function giveup() { //Function that is triggered when the user gives up on the current problem
       survey = true;
       correct = false;
     }
 
     function next(imp) { //Moves on to the next problem, but gives the user a survey first
+
+      if (problem >= 0 && problem < tutorials.length && tutorials[problem].length) {
+        survey = true;
+
+
+        document.getElementById("survey").innerHTML = "";
+        var st = "";
+        for (var i = 0 ; i < tutorialtext[problem].length ; i++) {
+          st += tutorialtext[problem][i];
+        }
+        document.getElementById("survey").innerHTML = st;
+
+        tutorials[problem] = "";
+        tutorial = true;
+
+        document.getElementById("survey").innerHTML += "<button id=\"nextbutton\" onclick=next()>Next Problem</button>";
+        return;
+      }
+      else {
+        tutorial = false;
+      }
+
       problem++;
+
       if (correct) {
         totsolved++;
       }
@@ -1554,7 +1746,8 @@ TODO:
         if (!imp) {
           problemStart = Date.now();
         }
-        updateProblem(problem+1);
+
+        updateProblem(problem+1, true);
         if (langs[problem] == "PYTHON") {
           lang = "python";
           editor.session.setMode("ace/mode/python");
@@ -1646,14 +1839,17 @@ TODO:
         cop = editor.getSelectedText(); //Checks if the user copied editor code
       }
 
-      if (keys[86] == 2 && oe != editor.getValue() && !global_allowed) {
-        var ok = oe + cop;
+      if (pasted && oe != editor.getValue() && !global_allowed) {
+        var ok = oe + copyText;
         var real = editor.getValue();
         if (ok.split("").sort().join("") != real.split("").sort().join("")) { // Prevents the user from copying and pasting external code
           editor.setValue(oe);
           editor.clearSelection();
           editor.getSession().setUndoManager(new ace.UndoManager());
         }
+      }
+      if (pasted) {
+        pasted = false;
       }
 
       oe = editor.getValue();
@@ -2019,9 +2215,9 @@ def run():
 
     try:
       exec(newCode, globals());
-    except:
-
-      document.getElementById("pyresult").innerHTML = "Syntax Error";
+    except Exception as e:
+      print(e)
+      document.getElementById("pyresult").innerHTML = str(e);
       document.getElementById("pydebug").innerHTML = debugStr;
       return;
 
