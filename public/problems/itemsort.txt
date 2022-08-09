@@ -1,0 +1,17 @@
+Item Sort
+~~~
+Given a list of items, represented as strings, return the item that occurs the most in the list. If multiple items tie for the most occurrences, return the one that comes earliest in the alphabet (i.e. "apple" would come before "banana").
+~~~
+itemsort(items)
+~~~
+["apple", "banana", "cherry", "banana", "apple"]
+["dragonfruit", "elderberry", "fig", "fig", "fig"]
+["grape", "grape"]
+["horned_melon", "raspberry", "strawberry", "raspberry", "raspberry", "raspberry", "strawberry", "strawberry"]
+(["blueberry", "apple", "blueberry", "cranberry", "cranberry"])
+~~~
+"apple"
+"fig"
+"grape"
+"raspberry"
+"blueberry"

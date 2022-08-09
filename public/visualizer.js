@@ -100,7 +100,6 @@ function start() {
         }
       }
       edits[0][3] = "";
-      console.log(edits);
     }
   });
 
@@ -149,6 +148,7 @@ function start() {
 
     document.getElementById("txt").value = code.split("\n").join("~~~");
 
+    return edit[0];
   }
 
   function applyReverseEdit(edit, ei) {
@@ -203,9 +203,38 @@ function start() {
       end = edits[edits.length - 1][0] + 1;
       last = Date.now();
 
+      var codes = [];
+
+      for (var i = 0 ; i < edits.length ; i++) {
+        var time = applyEdit(edits[i], i);
+        codes.push([code, time]);
+      }
+
+      var codeStr = "";
+      codeStr += "[";
+      for (var i = 0 ; i < codes.length ; i++) {
+        var ncs = "";
+        for (var j = 0 ; j < codes[i][0].length ; j++) {
+          if (codes[i][0][j] == "\"") {
+            ncs += "\\\"";
+          }
+          else {
+            ncs += codes[i][0][j];
+          }
+        }
+        codeStr += "[\"\"\"" + ncs + "\"\"\"" + "," + codes[i][1] + "]";
+        if (i < codes.length - 1) {
+          codeStr += ",\n";
+        }
+      }
+
+      codeStr += "]";
+
+      console.log(codeStr);
     }
 
     if (loaded && last != -1) {
+
 
       cur = Date.now();
 

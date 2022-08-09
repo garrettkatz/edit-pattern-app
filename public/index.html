@@ -719,6 +719,7 @@ TODO:
   <div hidden=true id="send_jscode"></div>
   <div hidden=true id="send_solvecount"></div>
   <div hidden=true id="send_status"></div>
+  <div hidden=true id="send_lang"></div>
   <div hidden=true id="send_timeleft"></div>
   <div hidden=true id="preload"></div>
   <div hidden=true id="restart"></div>
@@ -1069,6 +1070,7 @@ TODO:
     var jscodes = [];
     var pycodes = [];
     var oldValue = "";
+    var loadedDat = false;
     var ov = "";
     for (var i = 0 ; i < problemset.length ; i++) {
       jscodes.push("function " + data[i][2][0] + " {\n    return 0;\n}");
@@ -1142,6 +1144,8 @@ TODO:
       return args;
     }
 
+    var sets = 0;
+
     function updateProblem(index) {
       var changed = false;
       if (editor.getValue() != ov || index != lp || olang != lang) {
@@ -1153,10 +1157,6 @@ TODO:
       }
 
       //if (tutorial) return;
-
-      //console.log("frame " + (Date.now() - veryStart));
-      //console.log("new code: ");
-      //console.log(jscodes[index-1]);
 
       var startTime = Date.now();
       globalStartTime = startTime;
@@ -1175,12 +1175,16 @@ TODO:
         if (index != lp) {
           oldValue = "";
         }
+        if (imported) {
+          sets++;
+        }
         if (lang == "python") {
           editor.setValue(pycodes[index-1]);
           editor.clearSelection();
           document.getElementById("text").innerHTML = pycodes[index-1];
         }
         else {
+          console.log("setting js");
           editor.setValue(jscodes[index-1]);
           editor.clearSelection();
         }
@@ -1427,13 +1431,46 @@ TODO:
         problemStart = time;
         var stat = txt[5];
         lang = txt[6];
+        console.log("setting language to " + lang);
+        console.log(txt);
+        //console.log(txt[7]);
+        //oldValue = txt[7];
+        loadedDat = true;
+/*
+dp = []
 
+def gp(grid, x, y):
+    if dp[x][y] != -1:
+        return dp[x][y]
+    if grid[x][y] == 'x':
+        return 0
+    ans = 0
+    if x > 0:
+        ans += gp(grid, x - 1, y)
+    if y > 0:
+        ans += gp(grid, x, y - 1)
+    dp[x][y] = ans
+    return ans
+
+def grid_paths(grid):
+    for i in range(0, len(grid)):
+        dp.append([])
+        for j in range(0, len(grid[i])):
+            dp[-1].append(-1)
+
+    dp[0][0] = 1
+
+    return gp(grid, len(grid) - 1, len(grid[0]) - 1)
+    */
         if (lang == "python") {
           python();
+          editor.setValue(fpycode);
         }
         else {
           js();
+          editor.setValue(fjscode);
         }
+
 
         problem = fproblem;
         var npc = "";
@@ -1543,6 +1580,8 @@ TODO:
         }
 
         document.getElementById("send_status").innerHTML = status;
+        document.getElementById("send_lang").innerHTML = lang;
+
       }
 
       window.requestAnimationFrame(upd, 1000);
@@ -1985,7 +2024,9 @@ TODO:
       var row = pos.row;
       var col = pos.column;
 
+
       if (nv != oldValue) {
+
         // Figures out exactly which characters were edited from one keystroke
         // This was a surprisingly difficult task, because in one keystroke the user could theoretically delete any number of characters and replace them with any number of characters (e.g. if they deleted a lot of code and pasted other code in simultaneously using Ctrl-V)
 
@@ -2033,13 +2074,20 @@ TODO:
         edit = [oldSlice, newSlice, line, char, i];
 
         lastEdit = Date.now() + "~~~" + edit.join("~~~");
-        document.getElementById("edit").innerHTML = Date.now() + "~~~" + edit.join("~~~");
+
+
+        if (!imported) {
+          document.getElementById("edit").innerHTML = Date.now() + "~~~" + edit.join("~~~");
+        }
         //Communicates edit data with database.js for updating firebase
       }
 
       orow = row;
       ocol = col;
-      oldValue = editor.getValue();
+
+      //if (loadedDat) {
+        oldValue = editor.getValue();
+      //}
 
       ost = editor.getSelectedText();
 

@@ -33,6 +33,37 @@ const provider = new firebase.auth.GoogleAuthProvider();
 
 var done = false;
 
+function applyEdit(code, index, newc, oldc) {
+
+  code = code.split("");
+
+  var line = 1;
+  var col = 0;
+
+  var ind = code.length;
+
+  var newcode = "";
+
+
+  ind = index;
+
+  for (var i = 0 ; i < ind ; i++) {
+    newcode += code[i];
+  }
+
+
+  newcode += newc
+
+  for (var i = ind + oldc.length ; i < code.length ; i++) {
+    newcode += code[i];
+  }
+
+  code = newcode;
+
+
+  return code;
+}
+
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     // User is signed in, see docs for a list of available properties
@@ -53,7 +84,6 @@ firebase.auth().onAuthStateChanged((user) => {
         var vl = snapshot.val();
         var info = vl["info"];
         if (!done && info != undefined) {
-
           var problem = info["problem"];
           var jscode;
           if (info["jscode"] == undefined) {
@@ -73,8 +103,32 @@ firebase.auth().onAuthStateChanged((user) => {
           var count = info["solvecount"];
           var status = info["status"];
           var time = info["time"];
-          var lang = vl["language"];
-          document.getElementById("preload").innerHTML = [problem, pycode, jscode, count, time, status, lang].join("~~~");
+          var lang = info["lang"];
+          var keys = vl["keystrokes"][problem];
+
+          console.log("about to send " + lang);
+
+          var oldcode = "";
+          if (keys != undefined) {
+            var ks = Object.getOwnPropertyNames(keys);
+            if (ks != undefined) {
+              var mx = 0;
+              var mxi = "";
+              ks.sort();
+              var edits = [];
+              for (var i = 0 ; i < ks.length ; i++) {
+                var edit = keys[ks[i]];
+                //console.log("problem: " + problem);
+                //console.log(edit);
+                oldcode = applyEdit(oldcode, edit["index"], edit["newcode"], edit["oldcode"]);
+              }
+            }
+          }
+
+          //console.log("old code: ");
+          //console.log(oldcode);
+
+          document.getElementById("preload").innerHTML = [problem, pycode, jscode, count, time, status, lang, oldcode].join("~~~");
           done = true;
 
         }
@@ -167,9 +221,9 @@ function updateDatabase() {
   var count = document.getElementById("send_solvecount").innerHTML;
   var time = document.getElementById("send_timeleft").innerHTML;
   var status = document.getElementById("send_status").innerHTML;
+  var lang = document.getElementById("send_lang").innerHTML;
 
-
-  if (done && prob.length > 0 && pycode.length && jscode.length && ljscode.length && lpycode.length && uid != undefined && (status != lstatus ||  !ldone || prob != lprob || pycode.join("~~~") != lpycode.join("~~~") || jscode.join("~~~") != ljscode.join("~~~") || count != lcount)) {
+  if (done && lang.length > 0 && prob.length > 0 && pycode.length && jscode.length && ljscode.length && lpycode.length && uid != undefined && (status != lstatus ||  !ldone || prob != lprob || pycode.join("~~~") != lpycode.join("~~~") || jscode.join("~~~") != ljscode.join("~~~") || count != lcount)) {
     firebase.database().ref(uid + "/info/problem").set(prob);
     for (var i = 0 ; i < 1000 ; i++) {
       if (i < pycode.length) {
@@ -191,6 +245,8 @@ function updateDatabase() {
     firebase.database().ref(uid + "/info/status").set(status);
     firebase.database().ref(uid + "/info/id").set(thisProgram);
     firebase.database().ref(uid + "/info/time").set(time);
+
+    firebase.database().ref(uid + "/info/lang").set(lang);
 
 
   }

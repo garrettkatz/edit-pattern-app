@@ -1,0 +1,17 @@
+Grid Paths
+~~~
+Given a 2D grid with some open cells (represented with spaces) and some obstacles (represented by 'x' characters), output the number of ways to get from the top left corner of the grid to the bottom right of the corner of the grid, while avoiding all obstacles. You can only move to the right and down.
+~~~
+grid_paths(grid)
+~~~
+[[" ", " ", " "], ["x", " ", " "], ["x", " ", " "]]
+[[" ", " ", " ", " ", " "], [" ", " ", " ", " ", " "], [" ", " ", "x", " ", " "], [" ", " ", " ", " ", " "]]
+[[" ", "x"], ["x", " "]]
+[[" ", " ", " ", "x", " "], [" ", " ", " ", " ", " "], [" ", " ", " ", " ", "x"], [" ", " ", " ", "x", " "]]
+([[" ", " ", " ", "x", " "], [" ", "x", " ", " ", " "], [" ", " ", "x", " ", " "], [" ", " ", " ", "x", " "]])
+~~~
+3
+17
+0
+0
+2
