@@ -2,7 +2,7 @@
 
 A custom IDE that logs users' keystrokes, and automatically tests Python and JS code on several editable problems.
 
-To run the IDE, go to https://keylogging-ide.web.app/
+To run the IDE, go to https://keylogging-ide.web.app/ and log in with a Google account (does not need to be an SU email).
 
 To replay keystrokes from a previous session, go to https://keylogging-ide.web.app/visualizer.html and enter in the appropriate Session ID.
 
