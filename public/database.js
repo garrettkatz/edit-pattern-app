@@ -7,15 +7,25 @@ import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCEMrtlp1Rncetvn11FYZFeqTriXt2b_dw",
+//   authDomain: "keylogging-ide.firebaseapp.com",
+//   projectId: "keylogging-ide",
+//   storageBucket: "keylogging-ide.appspot.com",
+//   messagingSenderId: "685589642452",
+//   appId: "1:685589642452:web:4db158cae59b2d13d68f41",
+//   measurementId: "G-976S45SE8Q",
+//   databaseURL: "https://keylogging-ide-default-rtdb.firebaseio.com/"
+// };
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCEMrtlp1Rncetvn11FYZFeqTriXt2b_dw",
-  authDomain: "keylogging-ide.firebaseapp.com",
-  projectId: "keylogging-ide",
-  storageBucket: "keylogging-ide.appspot.com",
-  messagingSenderId: "685589642452",
-  appId: "1:685589642452:web:4db158cae59b2d13d68f41",
-  measurementId: "G-976S45SE8Q",
-  databaseURL: "https://keylogging-ide-default-rtdb.firebaseio.com/"
+  apiKey: "AIzaSyCbTIrCVrExm-l3jj1LotrkzwHGdboLE6U",
+  authDomain: "aps-keylogger.firebaseapp.com",
+  projectId: "aps-keylogger",
+  storageBucket: "aps-keylogger.appspot.com",
+  messagingSenderId: "3201410277",
+  appId: "1:3201410277:web:a80108839d1445841d200c",
+  databaseURL: "https://aps-keylogger-default-rtdb.firebaseio.com/"
 };
 
 // Initialize Firebase
