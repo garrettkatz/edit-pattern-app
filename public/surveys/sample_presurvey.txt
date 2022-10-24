@@ -1,0 +1,3 @@
+SLIDER "How many years of coding experience do you have?" 0 16
+MC "Have you done Competitive Programming before?" "No" "A little bit" "Yes"
+TEXTBOX "Do you have any questions or clarifications?"

@@ -1,0 +1,22 @@
+presurvey
+product 300 simplesurvey PYTHON printing
+sumthree 300 simplesurvey JS logic
+inrange 300 simplesurvey BOTH
+fizzbuzz 300 simplesurvey BOTH looping
+factorial 300 simplesurvey BOTH
+divisors 300 simplesurvey BOTH lists
+arraysum 300 simplesurvey BOTH
+double 300 simplesurvey BOTH
+collatz 300 simplesurvey BOTH
+stringsort 300 simplesurvey BOTH
+validbracket 450 simplesurvey BOTH
+binomial 300 simplesurvey BOTH
+divisors2 450 simplesurvey BOTH
+itemsort 450 simplesurvey BOTH
+positionsort 450 simplesurvey BOTH 2Dlists
+minesweeper 600 simplesurvey BOTH
+tictactoe 600 simplesurvey BOTH
+binomial2 900 simplesurvey BOTH
+gridpaths 1200 simplesurvey
+shortestflights 2400 simplesurvey BOTH
+postsurvey

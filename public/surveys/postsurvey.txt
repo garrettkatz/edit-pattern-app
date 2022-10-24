@@ -1,4 +1,1 @@
-MC "Were the problems easier or harder than you expected?" "Way easier" "A bit easier" "Exactly what I expected" "A bit harder" "Way harder"
-SLIDER "Rate the problem quality on a scale of 1 to 5." 1 5
-TEXTBOX "Which problem was your favorite, and why?"
-TEXTBOX "Which problem was your least favorite, and why?"
+MC "Thank you for your participation in this study. Your data will be processed for compensation and then de-identified.  Please click below to indicate that you understand before logging out." "I understand."

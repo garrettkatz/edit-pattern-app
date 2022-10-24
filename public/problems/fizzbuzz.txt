@@ -1,4 +1,4 @@
-FizzBuzz
+FizzBuzz STRICT
 ~~~
 Write a function to solve the classic FizzBuzz example problem.
 Given an integer N, return:

@@ -1,4 +1,4 @@
-Factorial
+Factorial STRICT
 ~~~
 Write a function to calculate the factorial of an integer N.
 ~~~

@@ -1,0 +1,4 @@
+SLIDER "How familiar was this coding challenge to you? 'Familiar' means that you have solved the same or similar problems in the past and remembered your past solution strategy.  Rate on a scale from 0 (not familiar) to 10 (very familiar)." 0 10
+SLIDER "In your opinion, how advanced was this coding challenge?  'Advanced' means that significant education and experience are required to solve it.  Rate on a scale from 0 (not advanced) to 10 (very advanced)." 0 10
+SLIDER "What was more challenging about this exercise: limited time, or determining a solution strategy?  Rate on a scale from 0 (time was more challenging) to 10 (solution strategy was more challenging)." 0 10
+TEXTBOX "Optional: Provide a brief one-paragraph conceptual explanation of your solution and how it works.  If you did not finish the exercise, then describe the solution you envisioned and how it would work."

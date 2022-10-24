@@ -1,15 +1,15 @@
-Sort the String
+Sort the String STRICT
 ~~~
 Given a string of lowercase english letters, sort the string in alphabetical order.
 ~~~
 stringsort(st)
 ~~~
-"xavier"
+"coding"
 "syracuse"
-"berkeley"
-("california")
+"sorting"
+("hidden")
 ~~~
-"aeirvx"
+"cdgino"
 "acerssuy"
-"beeeklry"
-"aacfiilnor"
+"ginorst"
+"ddehin"

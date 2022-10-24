@@ -1,4 +1,4 @@
-Double the Array
+Double the Array STRICT
 ~~~
 Given an array of integers, return a new array with each integer multiplied by two.
 ~~~

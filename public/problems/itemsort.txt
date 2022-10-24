@@ -1,4 +1,4 @@
-Item Sort
+Item Sort STRICT
 ~~~
 Given a list of items, represented as strings, return the item that occurs the most in the list. If multiple items tie for the most occurrences, return the one that comes earliest in the alphabet (i.e. "apple" would come before "banana").
 ~~~

@@ -1,4 +1,4 @@
-Sort by Position
+Sort by Position STRICT
 ~~~
 Given an array of distinct positive integers, return a new array with each element being the index of the original array element if you sorted the array.
 ~~~

@@ -1,4 +1,4 @@
-[PROBLEM NAME GOES HERE] add " STRICT" to diable external pasting
+[PROBLEM NAME GOES HERE] add " STRICT" to disable external pasting
 ~~~
 [PROBLEM DESCRIPTION GOES HERE]
 ~~~
