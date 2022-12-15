@@ -2,7 +2,7 @@ Divisors STRICT
 ~~~
 Given an integer, return a sorted list of all of its divisors, including both 1 and the number itself.
 ~~~
-divisor_list(n)
+divisors(n)
 ~~~
 6
 27

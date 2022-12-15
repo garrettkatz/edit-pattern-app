@@ -2,7 +2,7 @@ Binomial Coefficients STRICT
 ~~~
 Write a function that, given two integers N and K, returns N choose K, or the Binomial Coefficient of N and K.
 ~~~
-n_choose_k(n, k)
+binomial(n, k)
 ~~~
 5 3
 9 4

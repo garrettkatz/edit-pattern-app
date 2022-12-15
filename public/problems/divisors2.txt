@@ -3,7 +3,7 @@ Divisors Part 2 STRICT
 Given an integer, return a sorted list of all of its divisors, including both 1 and the number itself.
 In this problem, the integer can be up to 10^12.
 ~~~
-divisor_list2(n)
+divisors2(n)
 ~~~
 6
 27
