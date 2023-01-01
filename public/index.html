@@ -53,7 +53,11 @@ TODO:
             top: 210px;
             bottom: 50px;
             right: 50%;
-            left: 10%;
+            /* left: 5%; */
+            left: 1%;
+
+            /* border-style: solid; */
+
           }
           #input {
             position: absolute;
@@ -98,7 +102,8 @@ TODO:
           }
           #selectjs {
             color: rgba(0, 0, 0, 1);
-            top: 141px;
+            /* top: 141px; */
+            top: 90px;
             height: 40px;
             background-color: rgba(200, 200, 200, 1);
             left: 0%;
@@ -107,7 +112,8 @@ TODO:
           }
           #backgroundjs {
             color: rgba(240, 120, 0, 1);
-            top: 141px;
+            /* top: 141px; */
+            top: 90px;
             height: 40px;
             background-color: rgba(0, 0, 80, 1);
             left: 0%;
@@ -116,7 +122,8 @@ TODO:
           }
           #selectpython {
             color: rgba(0, 0, 0, 1);
-            top: 141px;
+            /* top: 141px; */
+            top: 90px;
             height: 40px;
             background-color: rgba(200, 200, 200, 1);
             left: 50%;
@@ -125,7 +132,8 @@ TODO:
           }
           #backgroundpython {
             color: rgba(0, 0, 80, 1);
-            top: 141px;
+            /* top: 141px; */
+            top: 90px;
             height: 40px;
             background-color: rgba(240, 120, 0, 1); /* go orange */
             left: 50%;
@@ -147,14 +155,16 @@ TODO:
           #title {
             font-family: 'AvenirNext-Bold';
             text-align: center;
-            font-size: 80px;
+            /* font-size: 80px; */
+            font-size: 40px;
             margin-top: 0px;
           }
           #subtitle {
             font-family: 'Avenir', 'Montserrat';
             text-align: center;
             font-size: 23px;
-            margin-top: -6px;
+            /* margin-top: -6px; */
+            margin-top: 0px;
           }
           #select {
             font-family: 'Avenir', 'Montserrat';
@@ -226,8 +236,10 @@ TODO:
           }
           #prob {
             position: absolute;
-            top: 320px;
-            height: 150px;
+            /* top: 320px; */
+            top: 250px;
+            /* height: 150px; */
+            height: 60px;
             right: 1%;
             left: 51%;
             padding: 20px;
@@ -260,7 +272,8 @@ TODO:
           }
           #testcases {
             position: absolute;
-            top: 530px;
+            /* top: 530px; */
+            top: 370px;
             bottom: 40px;
             right: 1%;
             left: 51%;
@@ -856,7 +869,8 @@ TODO:
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/textmate");
     editor.session.setMode("ace/mode/javascript");
-    editor.setOptions({fontSize: '12pt', behavioursEnabled: false, enableBasicAutocompletion: true, enableLiveAutocompletion: true}); // Sets up the editor
+    // editor.setOptions({fontSize: '12pt', behavioursEnabled: false, enableBasicAutocompletion: true, enableLiveAutocompletion: true}); // Sets up the editor
+    editor.setOptions({fontSize: '18pt', behavioursEnabled: false, enableBasicAutocompletion: true, enableLiveAutocompletion: true}); // Sets up the editor
     var copyText;
     var pasted = false;
 
