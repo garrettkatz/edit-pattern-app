@@ -9,9 +9,16 @@ from drop import drop
 time_limits = problems['seconds'].values
 problems = problems['name'].values
 
-df, _, _ = read_data('data.json')
+# df, _, _ = read_data('data.json')
+df, _, _ = read_data('../data/aps-keylogger-default-rtdb-export.2024.02.07.json', bad_sessions=[
+    '7RKhKKS5PvStLhW6yiof6QCCcNw2',
+    'QcbVjFNMVLXDpHq104m5aCyCxnM2',
+    'vf7aIkhcqiM7i5G6DndGd9lNfn03',
+])
 sessions = df['session'].unique()
 print(sessions)
+
+markers = list("o+x.*^")[:len(sessions)]
 
 grouped = df.groupby(['session', 'problem'])
 best_score = 100 * grouped['passed'].max() / grouped['total'].max()
@@ -50,10 +57,11 @@ mp.rcParams['font.family'] = 'serif'
 mp.rcParams['font.size'] = 8
 pt.figure(figsize=(3.5, 2))
 x, y = [], []
-for s, (marker, session) in enumerate(zip("+x.", sessions)):
+for s, (marker, session) in enumerate(zip(markers, sessions)):
     bs = best_score.xs(session, level='session')
+    print(session)
     bs = bs[problems]
-    pt.plot(range(len(problems)), bs.values, linestyle='none', color='k', marker=marker)
+    pt.plot(range(len(problems)), bs.values, linestyle='none', color='k', fillstyle='none', marker=marker)
     x.extend(range(len(problems)))
     y.extend(bs[problems].values)
 
@@ -103,7 +111,7 @@ for key in ['cmins', 'cmaxes', 'cbars']:
     parts[key].set_edgecolor((.8,.8,.8))
 for k,bs in enumerate(x):
     pt.plot(np.random.uniform(-.1, +.1, len(bs)) + (k+1), np.random.uniform(-3, 3, len(bs)) + bs, '.', color=(.25,)*3)
-pt.xticks(range(1,4), list("+x."))
+pt.xticks(range(1,len(sessions)+1), markers)
 pt.xlabel("Participant")
 pt.ylabel("% tests passed")
 pt.tight_layout()

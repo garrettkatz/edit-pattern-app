@@ -78,7 +78,12 @@ def compress_edits(df):
 
 if __name__ == "__main__":
 
-    df, _, _ = read_data('data.json')
+    # df, _, _ = read_data('data.json')
+    df, _, _ = read_data('../data/aps-keylogger-default-rtdb-export.2024.02.07.json', bad_sessions=[
+        '7RKhKKS5PvStLhW6yiof6QCCcNw2',
+        'QcbVjFNMVLXDpHq104m5aCyCxnM2',
+        'vf7aIkhcqiM7i5G6DndGd9lNfn03',
+    ])
 
     # omit practice
     df = df[df['problem'] != 'product']

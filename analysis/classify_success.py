@@ -5,7 +5,6 @@ import matplotlib.pyplot as pt
 import matplotlib as mp
 from read_data import read_data
 from ordered_problems import problems
-from compress_edits import compress_edits
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.metrics import balanced_accuracy_score
@@ -13,7 +12,12 @@ from sklearn.metrics import balanced_accuracy_score
 if __name__ == "__main__":
 
     # load data
-    df, _, _ = read_data('data.json')
+    # df, _, _ = read_data('data.json')
+    df, _, _ = read_data('../data/aps-keylogger-default-rtdb-export.2024.02.07.json', bad_sessions=[
+        '7RKhKKS5PvStLhW6yiof6QCCcNw2',
+        'QcbVjFNMVLXDpHq104m5aCyCxnM2',
+        'vf7aIkhcqiM7i5G6DndGd9lNfn03',
+    ])
     # omit practice
     df = df[df['problem'] != 'product']
 
@@ -21,7 +25,6 @@ if __name__ == "__main__":
     best_score = 100 * grouped['passed'].max() / grouped['total'].max()
     success = (best_score == 100).astype(int)
 
-    # cdf = compress_edits(df)
     with open('cdf.pkl', 'rb') as f: cdf = pk.load(f)
 
     max_steps = int(cdf['step'].max())+1
@@ -44,6 +47,7 @@ if __name__ == "__main__":
     accs = {"train": {}, "test": {}}
     baccs = {"train": {}, "test": {}}
     ns = {"train": [[], []], "test": [[], []]} # [tr/ts][0/1][L]
+    min_samps = 5
     n_splits = 3
     n_repeats = 10
     for L in range(1, int(lengths[~np.isnan(lengths)].max())):
@@ -51,7 +55,7 @@ if __name__ == "__main__":
         inp, out = features[samples, :2*L], labels[samples]
 
         # make sure enough labels in each class for cross-validation
-        if not (1*n_splits <= out.sum() <= len(out) - 1*n_splits): continue
+        if not (min_samps*n_splits <= out.sum() <= len(out) - min_samps*n_splits): continue
 
         accs['train'][L], accs['test'][L] = [], []
         baccs['train'][L], baccs['test'][L] = [], []
@@ -61,7 +65,7 @@ if __name__ == "__main__":
         # kf = StratifiedKFold(n_splits=n_splits, shuffle=True)
         kf = RepeatedStratifiedKFold(n_repeats=n_repeats, n_splits=n_splits)
         for k, (train, test) in enumerate(kf.split(inp, out)):
-            print(f"L={L}, {int(out[train].sum())}|{len(inp)} train, {int(out[test].sum())}|{len(test)} test, fold {k} of {kf.get_n_splits(inp)}")
+            print(f"L={L}, {int(out[train].sum())}|{len(train)} train, {int(out[test].sum())}|{len(test)} test, fold {k} of {kf.get_n_splits(inp)}")
 
         # # LOO validation
         # for k in range(len(inp)):
@@ -74,7 +78,7 @@ if __name__ == "__main__":
                     ns['train'][lab].append((out[train] == lab).sum())
                     ns['test'][lab].append((out[test] == lab).sum())
 
-            svc = LinearSVC(max_iter=20000)
+            svc = LinearSVC(dual='auto', max_iter=20000)
             svc.fit(inp[train], out[train])
             accs['train'][L].append(svc.score(inp[train], out[train]))
             accs['test'][L].append(svc.score(inp[test], out[test]))
@@ -101,8 +105,9 @@ if __name__ == "__main__":
     # pt.xlabel('# leading edits')
     pt.ylabel('# samples')
     pt.xticks([])
-    pt.xlim([0, 17])
-    pt.ylim([0, 60])
+    # pt.xlim([0, 17])
+    # pt.ylim([0, 60])
+    pt.ylim([0, 120])
     pt.legend(ncol=4, fontsize=8, columnspacing=.5, loc='upper center')
 
     # for L in Ls: print(accs[L])
@@ -121,17 +126,20 @@ if __name__ == "__main__":
                     # pt.plot(L + np.random.uniform(-.25, .25, len(pts)), pts + np.random.uniform(-.01, .01, len(pts)), '.', color=(.5,)*3)
                     pt.plot([L]*len(pts), pts, '.', color=(.5,)*3)
             pt.plot(Ls, avg, 'k' + ls, label=label)
+
     pt.subplot(3,1,2)
     pt.ylabel('unbalanced\ntest accuracy')
     # pt.ylim([ymin-.1, 1.1])
+    pt.ylim([.4, 1.])
     pt.xticks([])
-    pt.xlim([0, 17])
+    # pt.xlim([0, 17])
     pt.subplot(3,1,3)
     pt.ylabel('balanced\ntest accuracy')
     pt.xlabel("# leading edits used for input features")
+    pt.ylim([.3, 1.])
     # pt.ylim([ymin-.1, 1.1])
-    pt.xlim([0, 17])
-    pt.xticks(range(1,17,3), list(map(str, range(1,17,3))))
+    # pt.xlim([0, 17])
+    # pt.xticks(range(1,17,3), list(map(str, range(1,17,3))))
     pt.tight_layout()
     pt.savefig('classacc.pdf')
     pt.show()

@@ -8,8 +8,16 @@ if __name__ == "__main__":
 
     problems = problems['name'].values
 
-    df, _, _ = read_data('data.json')
+    # df, _, _ = read_data('data.json')
+    df, _, _ = read_data('../data/aps-keylogger-default-rtdb-export.2024.02.07.json', bad_sessions=[
+        '7RKhKKS5PvStLhW6yiof6QCCcNw2',
+        'QcbVjFNMVLXDpHq104m5aCyCxnM2',
+        'vf7aIkhcqiM7i5G6DndGd9lNfn03',
+    ])
+
     sessions = df['session'].unique()
+
+    markers = list("o+x.*^")[:len(sessions)]
 
     # omit practice
     df = df[df['problem'] != 'product']
@@ -124,7 +132,7 @@ if __name__ == "__main__":
     max_y = {}
     max_x = {}
 
-    fig, axs = pt.subplots(3, len(pidxs), constrained_layout=True, figsize=(9.5,2.75))
+    fig, axs = pt.subplots(len(sessions), len(pidxs), constrained_layout=True, figsize=(9.5,len(sessions)*.7))
     for subject, session in enumerate(sessions):
         for p, pidx in enumerate(pidxs):
 
@@ -162,7 +170,7 @@ if __name__ == "__main__":
             # pt.ylabel(f"{'+x.'[subject]} [{'PASS' if success else 'FAIL'}]")
             if p == len(pidxs)-1:
                 ax.yaxis.set_label_position("right")
-                pt.ylabel(f" {'+x.'[subject]}", rotation=0)
+                pt.ylabel(f" {markers[subject]}", rotation=0)
 
             if not success:
                 for spine in ax.spines.values(): spine.set_linestyle((0,(8,5)))

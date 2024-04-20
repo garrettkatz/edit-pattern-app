@@ -9,8 +9,16 @@ if __name__ == "__main__":
 
     pd.set_option('display.max_colwidth', None)
 
-    df, responses, bad_sessions = read_data('data.json')
+    # df, responses, bad_sessions = read_data('data.json')
+    df, responses, bad_sessions = read_data('../data/aps-keylogger-default-rtdb-export.2024.02.07.json', bad_sessions=[
+        '7RKhKKS5PvStLhW6yiof6QCCcNw2',
+        'QcbVjFNMVLXDpHq104m5aCyCxnM2',
+        'vf7aIkhcqiM7i5G6DndGd9lNfn03',
+    ])
+
     sessions = df['session'].unique()
+
+    markers = list("o+x.*^")[:len(sessions)]
 
     grouped = df.groupby(['session', 'problem'])
     best_score = 100 * grouped['passed'].max() / grouped['total'].max()
@@ -58,13 +66,13 @@ if __name__ == "__main__":
 
     mp.rcParams['font.size'] = 8
     mp.rcParams['font.family'] = 'serif'
-    pt.figure(figsize=(4,2))
+    pt.figure(figsize=(4,1.75))
     for c,(col, label) in enumerate(zip(questions, labels)):
         pt.subplot(1, len(questions), c+1)
-        for s, (marker, session) in enumerate(zip("+x.", sessions)):
+        for s, (marker, session) in enumerate(zip(markers, sessions)):
             dat = plot_data.xs(session, level='session')        
             # pt.scatter(plot_data[col].astype(int), plot_data['score'] + 0.01*np.random.rand(plot_data.shape[0]))
-            pt.plot(dat['score'], dat[col].astype(int), linestyle='none', color='k', marker=marker)
+            pt.plot(dat['score'], dat[col].astype(int), linestyle='none', fillstyle='none', color='k', marker=marker)
 
         # https://stackoverflow.com/questions/26447191/how-to-add-trendline-in-python-matplotlib-dot-scatter-graphs
         sc, srv = plot_data['score'], plot_data[col].astype(int)
@@ -73,12 +81,8 @@ if __name__ == "__main__":
         p = np.poly1d(z)
         pt.plot([sc.min(), sc.max()], [p(sc.min()), p(sc.max())], "k:")
 
-        # pt.ylabel(label)
-        pt.title(label)
-        if c == 0: pt.ylabel("Rating")
-        if c == 1: pt.yticks([])
-        pt.ylim([-.1, 10.1])
-    pt.gcf().supxlabel('% tests passed')
+        pt.ylabel(label)
+        pt.xlabel('% tests passed')
     pt.tight_layout()
     pt.savefig("perception.pdf")
     pt.show()
@@ -86,13 +90,13 @@ if __name__ == "__main__":
     # time limits and surveys
     problems = problems.set_index('name')
     pt.figure(figsize=(4,3))
-    for s, (marker, session) in enumerate(zip("+x.", sessions)):
+    for s, (marker, session) in enumerate(zip(markers, sessions)):
         dat = plot_data.xs(session, level='session')
         print(dat)
         dat.loc[:, 'time'] = dat['time'] / problems.loc[dat.index, 'seconds']
 
         # pt.scatter(plot_data[col].astype(int), plot_data['score'] + 0.01*np.random.rand(plot_data.shape[0]))
-        pt.plot(dat['time'], dat['challenge'].astype(int), linestyle='none', color='k', marker=marker)
+        pt.plot(dat['time'], dat['challenge'].astype(int), linestyle='none', color='k', fillstyle='none', marker=marker)
 
         # # https://stackoverflow.com/questions/26447191/how-to-add-trendline-in-python-matplotlib-dot-scatter-graphs
         # sc, srv = plot_data['score'], plot_data[col].astype(int)

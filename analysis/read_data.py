@@ -3,21 +3,22 @@ import json
 import pandas as pd
 from drop import drop
 
-def read_data(fname):
+def read_data(fname, bad_sessions=None):
+
+    if bad_sessions is None: bad_sessions = []
     
     # read and parse the json data
     with open(fname,'r') as f: data = json.load(f)
     
     # Iterate over sessions, skip ones with errors
     session_ids = list(data.keys())
-    bad_sessions = []
     df_data = []
     survey_data = []
     for sid, session_id in enumerate(session_ids):
         print(f"session id {session_id}")
     
         # try:
-        if True:
+        if session_id not in bad_sessions:
     
             # keystroke data: list of problems, each a dictionary mapping timesteps to edit data
             keystrokes = data[session_id]['keystrokes']
@@ -47,6 +48,9 @@ def read_data(fname):
                     prob_name = "binomial"
 
                 # save survey data
+                # print(session_id)
+                # print(prob_name)
+                # print(surveys)
                 survey_data.append([session_id, prob_name] + surveys[prob_name])
 
                 # reconstruct partial codes
@@ -65,10 +69,9 @@ def read_data(fname):
                     # add record to df data
                     df_data.append([session_id, prob_name, total_tests, t, timepoints[t], nc, oc, idx, tst, code])
 
-        # except:
-        else:
-    
-            bad_sessions.append(session_id)
+        # except: bad_sessions.append(session_id)
+        else:    
+            pass
 
     # wrap dataframes
     df = pd.DataFrame(data=df_data, columns = ['session', 'problem', 'total', 'step', 'time', 'newcode', 'oldcode', 'index', 'passed', 'partial'])
@@ -86,9 +89,18 @@ def read_data(fname):
 
 if __name__ == "__main__":    
 
-    df, responses, bad_sessions = read_data('data.json')
+    # fname = 'data.json'
+    fname = '../data/aps-keylogger-default-rtdb-export.2024.02.07.json'
+
+    df, responses, bad_sessions = read_data(fname, bad_sessions = [
+        '7RKhKKS5PvStLhW6yiof6QCCcNw2',
+        'QcbVjFNMVLXDpHq104m5aCyCxnM2',
+        'vf7aIkhcqiM7i5G6DndGd9lNfn03',
+        # 'vxDRxdJInrWEy20z44BNJKzeNfv1',
+    ])
     print(df)
     print(responses)
+    print("\nBad sessions:")
     print(bad_sessions)
 
     # # print long-format responses

@@ -5,7 +5,6 @@ import matplotlib.pyplot as pt
 import matplotlib as mp
 from read_data import read_data
 from ordered_problems import problems
-from compress_edits import compress_edits
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.metrics import balanced_accuracy_score
@@ -13,7 +12,13 @@ from sklearn.metrics import balanced_accuracy_score
 if __name__ == "__main__":
 
     # load data
-    df, _, _ = read_data('data.json')
+    # df, _, _ = read_data('data.json')
+    df, _, _ = read_data('../data/aps-keylogger-default-rtdb-export.2024.02.07.json', bad_sessions=[
+        '7RKhKKS5PvStLhW6yiof6QCCcNw2',
+        'QcbVjFNMVLXDpHq104m5aCyCxnM2',
+        'vf7aIkhcqiM7i5G6DndGd9lNfn03',
+    ])
+
     # omit practice
     df = df[df['problem'] != 'product']
     problems = problems['name'].values
@@ -21,6 +26,7 @@ if __name__ == "__main__":
 
     # list session ids
     sessions = df['session'].unique()
+    print(sessions)
 
     # group by attempt
     grouped = df.groupby(['session', 'problem'])
@@ -77,12 +83,17 @@ if __name__ == "__main__":
 
                 feature_vector = []
                 feature_vector.append(IKI[0]) # initial pause time
+                feature_vector.append(pause.sum()) # number of pauses
                 feature_vector.extend([IKI.mean(), np.median(IKI), IKI.std(), IKI.max()]) # IKI stats
                 feature_vector.extend([ # in/between word IKI 
                     IKI[inword].mean() if (inword).sum() > 0 else 0,
                     IKI[inword].std() if (inword).sum() > 0 else 0,
+                    IKI[inword].min() if (inword).sum() > 0 else 0,
+                    IKI[inword].max() if (inword).sum() > 0 else 0,
                     IKI[~inword].mean() if (~inword).sum() > 0 else 0,
                     IKI[~inword].std() if (~inword).sum() > 0 else 0,
+                    IKI[~inword].min() if (~inword).sum() > 0 else 0,
+                    IKI[~inword].max() if (~inword).sum() > 0 else 0,
                 ])
                 feature_vector.extend([rev.sum(), (rev & edge).sum(), (rev & ~edge).sum()]) # revisions (total, leading edge, in text)
                 feature_vector.append((dels > 0).sum()) # number of delete/backspace keystrokes
@@ -103,13 +114,14 @@ if __name__ == "__main__":
     accs = {"train": {}, "test": {}}
     baccs = {"train": {}, "test": {}}
     ns = {"train": [[], []], "test": [[], []]} # [tr/ts][0/1][L]
+    min_samps = 5
     n_splits = 3
     n_repeats = 10
     for L in sorted(features.keys()):
         inp, out = np.array(features[L]), np.array(labels[L])
 
         # make sure enough labels in each class for cross-validation
-        if not (1*n_splits <= out.sum() <= len(out) - 1*n_splits): continue
+        if not (min_samps*n_splits <= out.sum() <= len(out) - min_samps*n_splits): continue
 
         accs['train'][L], accs['test'][L] = [], []
         baccs['train'][L], baccs['test'][L] = [], []
@@ -124,7 +136,7 @@ if __name__ == "__main__":
                     ns['train'][lab].append((out[train] == lab).sum())
                     ns['test'][lab].append((out[test] == lab).sum())
 
-            svc = LinearSVC(max_iter=1000000)
+            svc = LinearSVC(dual='auto', max_iter=100_000)
             svc.fit(inp[train], out[train])
             accs['train'][L].append(svc.score(inp[train], out[train]))
             accs['test'][L].append(svc.score(inp[test], out[test]))
@@ -151,8 +163,8 @@ if __name__ == "__main__":
     # pt.xlabel('# leading edits')
     pt.ylabel('# samples')
     pt.xticks([])
-    pt.xlim([0, 17])
-    pt.ylim([0, 60])
+    # pt.xlim([0, 17])
+    pt.ylim([0, 120])
     pt.legend(ncol=4, fontsize=8, columnspacing=.5, loc='upper center')
 
     # for L in Ls: print(accs[L])
@@ -171,17 +183,20 @@ if __name__ == "__main__":
                     # pt.plot(L + np.random.uniform(-.25, .25, len(pts)), pts + np.random.uniform(-.01, .01, len(pts)), '.', color=(.5,)*3)
                     pt.plot([L]*len(pts), pts, '.', color=(.5,)*3)
             pt.plot(Ls, avg, 'k' + ls, label=label)
+
     pt.subplot(3,1,2)
     pt.ylabel('unbalanced\ntest accuracy')
     # pt.ylim([ymin-.1, 1.1])
+    pt.ylim([.4, 1])
     pt.xticks([])
-    pt.xlim([0, 17])
+    # pt.xlim([0, 17])
     pt.subplot(3,1,3)
     pt.ylabel('balanced\ntest accuracy')
     pt.xlabel("# leading edits used for input features")
+    pt.ylim([.3, 1.])
     # pt.ylim([ymin-.1, 1.1])
-    pt.xlim([0, 17])
-    pt.xticks(range(1,17,3), list(map(str, range(1,17,3))))
+    # pt.xlim([0, 17])
+    # pt.xticks(range(1,17,3), list(map(str, range(1,17,3))))
     pt.tight_layout()
     pt.savefig('classacc_timing.pdf')
     pt.show()
